@@ -1,0 +1,6 @@
+{
+    "recommendations": [
+        // Framework
+        "justjavac.vscode-deno" // Deno support
+    ]
+}
