@@ -1,6 +1,4 @@
-import { Client } from "https://deno.land/x/mysql/mod.ts";
-import { DB_CONNECTION } from './config.js'
+import { DB_CONNECTION } from "./env.ts";
+import { dso } from "https://deno.land/x/dso@v1.0.0/mod.ts";
 
-const client = await new Client().connect(DB_CONNECTION);
-
-export default client
+export const client = await dso.connect(DB_CONNECTION);

@@ -1,4 +1,4 @@
-import { Application } from "#/oak/mod.ts";
+import { Application } from "https://deno.land/x/oak/mod.ts";
 import { APP_HOST, APP_PORT } from "./config/env.ts";
 import router from "./routes/routes.ts";
 import _404 from "./controllers/404.ts";
@@ -7,7 +7,7 @@ import {
   viewEngine,
   engineFactory,
   adapterFactory,
-} from "#/view_engine/mod.ts";
+} from "https://deno.land/x/view_engine/mod.ts";
 
 const denjuckEngine = await engineFactory.getDenjuckEngine();
 const oakAdapter = await adapterFactory.getOakAdapter();
