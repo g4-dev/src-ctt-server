@@ -1,4 +1,5 @@
 # Deno config
+ENTRY_DIR:=src
 ENTRY:=app.ts
 IMPORT_MAP:=import_map.json
 ARGS:=--allow-env\
@@ -22,7 +23,7 @@ help:
 
 # Run server
 start:
-	deno run $(ARGS) app.ts
+	deno run $(ARGS) $(ENTRY_DIR)/$(ENTRY)
 
 # Start with debugger
 ARGS+=-A --inspect-brk
