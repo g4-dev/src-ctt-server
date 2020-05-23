@@ -1,4 +1,4 @@
-import client from '../db/MySqlClient.ts';
+import client from 'config/database.ts';
 import { search } from '../repository/user.ts';
 
 export async function getAll ({ response }: { response: any }) { 

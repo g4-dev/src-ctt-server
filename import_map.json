@@ -3,7 +3,7 @@
       "$/": "https://deno.land/std/",
       "#/": "https://deno.land/x/",
       "config/": "./config",
-      "~": "./modules",
+      "@/": "./modules",
       "controllers/": "./controllers",
       "repo/": "./repo",
       "services/": "./services"

@@ -4,10 +4,10 @@ import TranscriptModel from '../model/transcriptModel.ts'
 export const getTranscripts = async () => {
   const transcripts = await transcriptRepo.selectAll()
 
-  var result = new Array()
+  let result = new Array()
 
-  transcripts.rows.map(transcript => {
-    var obj = new TranscriptModel()
+  transcripts.rows.map((transcript:object) => {
+    let obj:object = new Object()
 
     transcripts.rowDescription.columns.map((el, i) => {
       obj[el.name] = transcript[i]
@@ -18,7 +18,7 @@ export const getTranscripts = async () => {
   return result
 }
 
-export const getTranscript = async transcriptId => {
+export const getTranscript = async (transcriptId:number) => {
   const transcripts = await transcriptRepo.selectById(transcriptId)
 
   var obj = new Object()
