@@ -1,4 +1,3 @@
-
 import { config } from "https://deno.land/x/dotenv/load.ts";
 
 console.log('env', config({ safe: true }))

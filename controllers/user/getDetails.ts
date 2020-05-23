@@ -1,8 +1,8 @@
 import client from '../db/MySqlClient.ts';
-import * as doesUserExist from '../specification/doesUserExist.ts';
+import * as doesUserExist from '../data/doesExist.ts';
 import { search } from '../repository/user.ts';
 
-export async function getUser ({ params, response }: { params: any; response: any }) {
+export async function getDetails ({ params, response }: { params: any; response: any }) {
     const hasRecord = await doesUserExist.isSatisfiedBy(params.id);
     let status = 200;
     

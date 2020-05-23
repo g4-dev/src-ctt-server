@@ -1,10 +1,10 @@
-import client from '../db/MySqlClient.ts';
-import * as doesUserExist from '../specification/doesUserExist.ts';
-import { remove } from '../repository/user.ts';
+import client from '../config/database';
+import { doesExist } from '../modules/data/doesExist';
+import { remove } from '../repo/user';
 
-export async function deleteUser ({ params, response }: { params: any; response: any }) {
-    const hasRecord = await doesUserExist.isSatisfiedBy(params.id);
-    let responseMessage = {};
+export async function remove ({ params, response }: { params: any; response: any }) {
+    const hasRecord = await doesExist.isSatisfiedBy('user', params.id);
+    let responseMessage:{}|void = {};
     let status = 200;
 
     if (hasRecord) {
