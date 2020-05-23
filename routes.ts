@@ -1,10 +1,12 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
 
-import getTranscripts from "./controllers/getTranscripts.js";
-import getTranscriptDetails from "./controllers/getTranscriptDetails.js";
-import createTranscript from "./controllers/createTranscript.js";
-import updateTranscript from "./controllers/updateTranscript.js";
-import deleteTranscript from "./controllers/deleteTranscript.js";
+import {
+  getTranscripts, 
+  getTranscriptDetails, 
+  createTranscript,
+  updateTranscript,
+  deleteTranscript
+ } from './controllers/transcript'
 
 const router = new Router();
 

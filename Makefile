@@ -1,3 +1,3 @@
 # Node makefile
 start:
-	deno --allow-env --allow-net --allow-read app.js
+	deno run --allow-env --allow-net --allow-read app.js

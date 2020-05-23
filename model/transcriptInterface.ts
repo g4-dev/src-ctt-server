@@ -1,4 +1,4 @@
-export default interface TranscriptModel {
+export default interface TranscriptInterface {
     name: string;
     content: string;
     is_live: boolean;
