@@ -24,12 +24,12 @@ help:
 start:
 	deno run $(ARGS) app.ts
 
-# Start with debugger 
+# Start with debugger
 ARGS+=-A --inspect-brk
 debug: start
 	@echo 'Started in Debug mode : '
 
-deploy: 
+deploy:
 	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\
 	/bin/bash -c '\
 	git fetch --all && git reset --hard upstream/master;'"

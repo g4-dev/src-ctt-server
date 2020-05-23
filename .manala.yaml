@@ -1,0 +1,3 @@
+manala:
+    repository: /Users/loic/Ops/manala-recipes
+    recipe: dev.deno
