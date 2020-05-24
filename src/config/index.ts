@@ -1,2 +1,3 @@
-export { APP_HOST, APP_PORT } from "./env.ts";
-export { client } from "./database.ts";
+import "./db.ts";
+
+export * from "./env.ts";

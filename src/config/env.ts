@@ -1,16 +1,15 @@
-import { config } from "https://deno.land/x/dotenv/load.ts";
+import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-console.log('env', config({ safe: true }))
-const env = Deno.env()
-
-export const APP_HOST = env.APP_HOST || "127.0.0.1"
-export const APP_PORT = env.APP_PORT || 8080
+const env = config();
+const { APP_HOST, APP_PORT } = env;
 
 // Database env
-export const DB_CONNECTION = {
-    password: env.DB_PASSWORD || '',
-    hostname: env.DB_HOST || "127.0.0.1",
-    username: env.DB_USER || 'root',
-    port: env.DB_PORT || 3306,
-    db: env.DB_NAME
-}
+const DB = {
+  hostname: env.DB_HOST || "127.0.0.1",
+  username: env.DB_USER,
+  password: env.DB_PASSWORD || "",
+  port: Number(env.DB_PORT) || 3306,
+  db: env.DB_NAME,
+};
+
+export { DB, APP_HOST, APP_PORT };

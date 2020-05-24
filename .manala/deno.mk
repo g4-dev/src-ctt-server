@@ -1,13 +1,23 @@
 # Deno config
 ENTRY_DIR:=src
 ENTRY:=app.ts
-IMPORT_MAP:=import_map.json
-ARGS:=--allow-env\
-	  --allow-net\
+IMPORT_MAP:=import-map.json
+# Argument group for different usages
+ARGS:=\
+	  --allow-env\
 	  --allow-read\
-	  --unstable\
+
+NET:=$(ARGS)\
+	  --allow-net\
+	  --recompile
+
+FULL:=$(ARGS) $(NET)\
 	  --importmap=$(ENTRY_DIR)/$(IMPORT_MAP)\
-	  --config tsconfig.json
+	  --allow-hrtime\
+	  --unstable\
+	  --config=tsconfig.json
+
+BIN:=$(ENTRY_DIR)/bin
 
 # Deployment (override this in Makefile)
 REMOTE_DIR_DEPLOY:=/var/www
@@ -24,12 +34,20 @@ help:
 
 # Run server
 start:
-	deno run $(ARGS) $(ENTRY_DIR)/$(ENTRY)
+	deno run $(NET) $(ENTRY_DIR)/$(ENTRY)
+
+full:
+	deno run $(FULL) $(ENTRY_DIR)/$(ENTRY)
+
+lint:
+	deno fmt
 
 # Start with debugger
-ARGS+=-A --inspect-brk
-debug: start
+debug:
+	$(eval ARGS+=--debug)
+	$(MAKE) start
 	@echo 'Started in Debug mode : '
+	@echo 'Open chrome://inspect/#devices'
 
 deploy:
 	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\

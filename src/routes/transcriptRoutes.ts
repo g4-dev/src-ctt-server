@@ -1,18 +1,18 @@
 import {
-  getAll,
-  getDetails,
+  //getAll,
+  //getDetails,
   add,
-  update,
-  remove,
+  //update,
+  //remove,
 } from "../controllers/transcript/index.ts";
 
-export default (router: Router) => {
+export default (router: any) => {
   router
-    .get("/transcripts", getAll)
-    .get("/transcripts/:id", getDetails)
-    .post("/transcripts", add)
-    .put("/transcripts/:id", update)
-    .delete("/transcripts/:id", remove);
+    //.get("/transcripts", getAll)
+    //.get("/transcripts/:id", getDetails)
+    .post("/transcripts", add);
+  //.put("/transcripts/:id", update)
+  //.delete("/transcripts/:id", remove);
 
   return router;
 };

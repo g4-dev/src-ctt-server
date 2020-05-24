@@ -1,5 +1,5 @@
 import { Router } from "https://deno.land/x/oak/mod.ts";
-import { globToRegExp } from "https://deno.land/std/path/glob.ts";
+//import { globToRegExp } from "https://deno.land/std/path/glob.ts";
 import transcriptRoutes from "./transcriptRoutes.ts";
 //import userRoutes from "./transcriptRoutes.ts";
 
@@ -16,4 +16,4 @@ let router: Router = new Router();
 router = transcriptRoutes(router);
 //router = userRoutes(router);
 
-export default router;
+export { router };

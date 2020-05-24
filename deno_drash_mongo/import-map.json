@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "drash": "https://deno.land/x/drash/mod.ts",
+    "mongo": "https://deno.land/x/mongo@v0.4.0/mod.ts",
+    "dotenv": "https://deno.land/x/dotenv/dotenv.ts"
+  }
+}

@@ -12,6 +12,10 @@ ID?=601897
 help_more:
 	@echo "[====== src-ctt-server =====]"
 
+# Project binary to update db schema
+schema:
+	deno run $(ARGS) $(BIN)/schema.ts
+
 # deploy for alwaydata datacenter
 deploy-ald: deploy
 	curl --basic --request POST --user $(TOKEN): $(API)/site/$(ID)/restart/
