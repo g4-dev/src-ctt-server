@@ -1,4 +1,4 @@
-import client from "../config/database.js";
+import { client } from "config/database.ts";
 
 class TranscriptRepo {
   create(transcript) {
@@ -7,7 +7,7 @@ class TranscriptRepo {
       transcript.name,
       transcript.content,
       transcript.is_live,
-      transcript.created_at || new Date('now')
+      transcript.created_at || new Date("now")
     );
   }
 
@@ -24,14 +24,16 @@ class TranscriptRepo {
     var hasSet = false;
     if (transcript.name !== undefined) {
       query +=
-        ` SET name = '${transcript.name}'` + (transcript.content !== undefined ? "," : "");
+        ` SET name = '${transcript.name}'` +
+        (transcript.content !== undefined ? "," : "");
       hasSet = true;
     }
 
     if (transcript.content !== undefined) {
       if (!hasSet) query += " SET ";
       query +=
-        ` content = '${transcript.content}'` + (transcript.is_live !== undefined ? "," : "");
+        ` content = '${transcript.content}'` +
+        (transcript.is_live !== undefined ? "," : "");
       hasSet = true;
     }
 

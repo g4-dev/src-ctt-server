@@ -5,8 +5,9 @@ IMPORT_MAP:=import_map.json
 ARGS:=--allow-env\
 	  --allow-net\
 	  --allow-read\
-	  --importmap=$(IMPORT_MAP)\
-	  --unstable
+	  --unstable\
+	  --importmap=$(ENTRY_DIR)/$(IMPORT_MAP)\
+	  --config tsconfig.json
 
 # Deployment (override this in Makefile)
 REMOTE_DIR_DEPLOY:=/var/www
