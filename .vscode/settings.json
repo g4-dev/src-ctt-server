@@ -2,13 +2,16 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true
   },
-  "editor.defaultFormatter": "justjavac.vscode-deno",
   "editor.formatOnSave": true,
   "javascript.validate.enable": false,
   "telemetry.enableCrashReporter": false,
   "telemetry.enableTelemetry": false,
   "path-intellisense.extensionOnImport": true,
-  "[javascript]": {
+  "[javascript|typescript]": {
     "editor.defaultFormatter": "justjavac.vscode-deno"
+  },
+  "files.associations": {
+    "*.yml": "yaml",
+    ".denonrc": "json"
   }
 }

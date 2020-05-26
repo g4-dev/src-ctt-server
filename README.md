@@ -28,6 +28,10 @@ curl -fsSL https://deno.land/x/install/install.sh | sh
 iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
+> Installer aussi denon si jamais vous voulez watch les changements de fichier et reload le serveur
+`deno install --allow-read --allow-run --allow-write -f --unstable https://deno.land/x/denon/denon.ts`
+
+
 2. Lancer le Serveur
 
 `make start` ou `make debug`

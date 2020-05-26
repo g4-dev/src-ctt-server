@@ -1,4 +1,0 @@
-export const HOST = 'HOST';
-export const PORT = 'PORT';
-export const MONGO_CONNECTION_STRING = 'MONGO_CONNECTION_STRING';
-export const MONGO_DATABASE_NAME = 'MONGO_DATABASE_NAME';

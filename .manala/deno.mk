@@ -9,11 +9,12 @@ ARGS:=\
 
 NET:=$(ARGS)\
 	  --allow-net\
-	  --recompile
+	  --reload
 
 FULL:=$(ARGS) $(NET)\
 	  --importmap=$(ENTRY_DIR)/$(IMPORT_MAP)\
 	  --allow-hrtime\
+	  --allow-write
 	  --unstable\
 	  --config=tsconfig.json
 
@@ -45,7 +46,7 @@ lint:
 # Start with debugger
 debug:
 	$(eval ARGS+=--debug)
-	$(MAKE) start
+	denon run $(NET) $(ENTRY_DIR)/$(ENTRY)
 	@echo 'Started in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
 
