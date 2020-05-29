@@ -14,7 +14,7 @@ help_more:
 
 # Project binary to update db schema
 schema:
-	deno run $(ARGS) $(BIN)/schema.ts
+	deno run $(BIN) $(BIN_DIR)/schema.ts
 
 # deploy for alwaydata datacenter
 deploy-ald: deploy

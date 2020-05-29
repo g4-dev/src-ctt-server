@@ -2,23 +2,21 @@
 ENTRY_DIR:=src
 ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
+BIN_DIR:=$(ENTRY_DIR)/bin
 # Argument group for different usages
 ARGS:=\
 	  --allow-env\
 	  --allow-read\
+	  --config=tsconfig.json\
+	  --allow-hrtime
 
 NET:=$(ARGS)\
-	  --allow-net\
-	  --reload
+	  --allow-net
 
-FULL:=$(ARGS) $(NET)\
-	  --importmap=$(ENTRY_DIR)/$(IMPORT_MAP)\
-	  --allow-hrtime\
-	  --allow-write
+BIN:=$(NET)\
+	  --allow-write\
 	  --unstable\
-	  --config=tsconfig.json
-
-BIN:=$(ENTRY_DIR)/bin
+	  --importmap=$(ENTRY_DIR)/$(IMPORT_MAP)\
 
 # Deployment (override this in Makefile)
 REMOTE_DIR_DEPLOY:=/var/www

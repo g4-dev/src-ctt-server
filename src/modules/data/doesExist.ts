@@ -1,6 +1,11 @@
-import client from '../config/database';
+import { BaseModel, Where } from "https://deno.land/x/dso@v1.0.0/mod.ts";
 
-export async function isSatisfiedBy(dataType:string, id:number) {
-    const result = await client.query(`SELECT COUNT(*) count FROM ${dataType} WHERE id = ?`, [id]);
-    return result[0].count >= 1;
+export async function isSatisfiedBy(model: BaseModel, id: number) {
+  const result = await model
+    .builder()
+    .select()
+    .where(Where.field("id").eq(id))
+    .limit(0, 1);
+
+  return result;
 }

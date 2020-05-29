@@ -1,15 +1,15 @@
 import { Application } from "https://deno.land/x/oak/mod.ts";
-import { APP_HOST, APP_PORT } from "./config/index.ts";
+import { APP_HOST, APP_PORT } from "./config.ts";
 import { router } from "./routes/index.ts";
-import _404 from "./controllers/_404.ts";
-import errorHandler from "./controllers/errorHandler.ts";
+import _404 from "./controllers/errors/_404.ts";
+import errorHandler from "./controllers/errors/errorHandler.ts";
 
 const app = new Application();
 
 // app.use(viewEngine(oakAdapter, denjuckEngine));
 app.use(errorHandler);
-//app.use(router.routes());
-// app.use(router.allowedMethods());
+app.use(router.routes());
+app.use(router.allowedMethods());
 app.use(_404);
 
 console.log(`Listening on port: ${APP_PORT}...`);

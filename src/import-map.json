@@ -1,9 +1,9 @@
 {
   "imports": {
-    "config/": "./config/",
     "@/": "./modules/",
     "controllers/": "./controllers/",
     "repo/": "./repo/",
-    "services/": "./services/"
+    "model/": "./model/",
+    "config/": "./"
   }
 }

@@ -5,9 +5,8 @@ import {
   Model,
 } from "https://deno.land/x/dso@v1.0.0/mod.ts";
 
-// Define an user entity
-@Model("user")
-export class User extends BaseModel {
+@Model("transcript")
+export class Transcript extends BaseModel {
   @Field({
     type: FieldType.INT,
     primary: true,
@@ -19,9 +18,9 @@ export class User extends BaseModel {
   @Field({ type: FieldType.STRING, length: 30 })
   name: string;
 
-  @Field({ type: FieldType.STRING, length: 30 })
-  token: string;
+  @Field({ type: FieldType.LONGTEXT, length: 255 })
+  content: string;
 
-  @Field({ type: FieldType.STRING, length: 30 })
-  secret: string;
+  @Field({ type: FieldType.STRING, length: 5 })
+  statut: string;
 }

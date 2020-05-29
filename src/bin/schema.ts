@@ -1,4 +1,8 @@
-import { dso } from "https://deno.land/x/dso@v1.0.0/mod.ts";
-import "../config/db.ts";
+import { dso } from "model/index.ts";
+import { conn } from "config/db.ts";
 
-(async () => await dso.sync(true))();
+(async () => {
+  console.info("Updating Schema...");
+  conn();
+  await dso.sync(true);
+})();

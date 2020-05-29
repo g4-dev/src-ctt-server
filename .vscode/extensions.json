@@ -9,9 +9,11 @@
     "drknoxy.eslint-disable-snippets", // Disable Some Eslint rules
     // Formatter
     "esbenp.prettier-vscode", // Js|Ts Formatter
+    "syler.sass-indented", // Format Sass
     // Languages
     "rbbit.typescript-hero",
-    "justjavac.vscode-deno" // Deno supports
+    "justjavac.vscode-deno", // Deno supports
+    "ritwickdey.live-sass" // Sass support,
   ],
   // List of extensions recommended by VS Code that should not be recommended for users of this workspace.
   "unwantedRecommendations": []

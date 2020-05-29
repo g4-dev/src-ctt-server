@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS `ctt_db`;
 CREATE DATABASE IF NOT EXISTS `ctt_db`;
 USE `ctt_db`;
 
-CREATE USER IF NOT EXISTS 'ctt_user'@'localhost' IDENTIFIED BY 'ctt';
+CREATE USER IF NOT EXISTS 'ctt_user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ctt';
+GRANT CREATE, DROP, SELECT, INSERT, UPDATE, DELETE ON `ctt_db`.* TO 'ctt_user'@'localhost';
 
 CREATE TABLE IF NOT EXISTS user (
     `id` INT NOT NULL auto_increment PRIMARY KEY,
