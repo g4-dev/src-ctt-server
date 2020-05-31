@@ -1,7 +1,4 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
-  },
   "editor.formatOnSave": true,
   "javascript.validate.enable": false,
   "telemetry.enableCrashReporter": false,
@@ -13,5 +10,7 @@
   "files.associations": {
     "*.yml": "yaml",
     ".denonrc": "json"
-  }
+  },
+  "deno.enabled": true,
+  "deno.importmap": "./src/import-map.json"
 }

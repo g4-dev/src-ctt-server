@@ -6,7 +6,6 @@ import errorHandler from "./controllers/errors/errorHandler.ts";
 
 const app = new Application();
 
-// app.use(viewEngine(oakAdapter, denjuckEngine));
 app.use(errorHandler);
 app.use(router.routes());
 app.use(router.allowedMethods());

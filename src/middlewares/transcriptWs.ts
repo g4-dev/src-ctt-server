@@ -1,4 +1,4 @@
-import transcriptRepo from "../repo/transcriptRepo.js"
+import transcriptRepo from "../repo/transcriptRepo.js.js.js"
 import TranscriptModel from '../model/transcriptModel.ts'
 
 export const getTranscripts = async () => {

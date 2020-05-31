@@ -31,6 +31,19 @@ iwr https://deno.land/x/install/install.ps1 -useb | iex
 > Installer aussi denon si jamais vous voulez watch les changements de fichier et reload le serveur
 `deno install --allow-read --allow-run --allow-write -f --unstable https://deno.land/x/denon/denon.ts`
 
+## Extensions à configurer
+
+Installez et activez bien les extensions vscode dans le dossier `.vscode/.extensions.json`.
+
+On rend le dev avec deno plus confortable
+
+use **npm**:
+
+`npm install --save-dev typescript-deno-plugin typescript`
+
+or use **yarn**:
+
+`yarn add -D typescript-deno-plugin typescript`
 
 2. Lancer le Serveur
 
@@ -78,10 +91,9 @@ Voici un aperçu de l'organisation :
 Des fichiers `index.ts` peuvent être placés à la racine de chaque dossier pour récupérer des variables / fonctions / classes / interfaces et les exporter pour les réutiliser plus facilement.
 
 ```js
-// j-exporte.ts
+// index.ts
 export { uneVar } from './foo/uneVar.ts').
-// On exporte tout ce qu'il y a dans ce fichier
-// Une class Class et une interface ClassInterface
+// On exporte tout ce qu'il y a dans ce fichier soit une class Class et une interface ClassInterface
 export * from './foo/grosseClasse.ts').
 ```
 
@@ -101,7 +113,6 @@ On essaie de suivre ce guide pour pas mettre du code poubelle. Petit projet ne v
 
 - ORM : [Dso](https://github.com/manyuanrong/dso)
 - Router : [Oak](https://deno.land/x/oak/)
-- Templating : [Denjuck](https://deno.land/x/denjucks/)
 
 # Base de donnée
 
@@ -129,6 +140,11 @@ mysql -u root -proot < src/mysql/init.sql
 3. Erreur possible
 
 [Pb de plugin de connection](https://stackoverflow.com/questions/51179516/sequel-pro-and-mysql-connection-failed)
+
+
+# Ui
+
+On sépare dans ce projet complètement l'interface du back end pour rester sur une utilisation simple des microservices
 
 # Déploiement
 

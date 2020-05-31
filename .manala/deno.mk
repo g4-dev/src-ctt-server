@@ -2,7 +2,7 @@
 ENTRY_DIR:=src
 ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
-BIN_DIR:=$(ENTRY_DIR)/bin
+BIN_DIR:=bin
 # Argument group for different usages
 ARGS:=\
 	  --allow-env\
@@ -16,7 +16,9 @@ NET:=$(ARGS)\
 BIN:=$(NET)\
 	  --allow-write\
 	  --unstable\
-	  --importmap=$(ENTRY_DIR)/$(IMPORT_MAP)\
+	  --importmap=$(IMPORT_MAP)
+
+EXE:=cd $(ENTRY_DIR) && deno run
 
 # Deployment (override this in Makefile)
 REMOTE_DIR_DEPLOY:=/var/www
@@ -33,10 +35,10 @@ help:
 
 # Run server
 start:
-	deno run $(NET) $(ENTRY_DIR)/$(ENTRY)
+	$(EXE) $(NET) $(ENTRY_DIR)/$(ENTRY)
 
 full:
-	deno run $(FULL) $(ENTRY_DIR)/$(ENTRY)
+	$(EXE) $(FULL) $(ENTRY_DIR)/$(ENTRY)
 
 lint:
 	deno fmt
