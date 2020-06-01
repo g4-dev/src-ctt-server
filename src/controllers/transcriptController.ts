@@ -1,6 +1,7 @@
 import { BaseModel, Where } from "https://deno.land/x/dso@v1.0.0/mod.ts";
-import { conn } from "../db.ts";
+import { conn } from "../config.ts";
 import { isSatisfiedBy } from "../modules/data/doesExist.ts";
+import { Put, All, Delete, Post, Get } from "../interfaces/verbs.ts";
 
 let model: BaseModel;
 
@@ -9,7 +10,7 @@ export const crud = {
     model = newModel;
   },
 
-  async getDetails({ params, response }: { params: any; response: any }) {
+  async getDetails({ params, response }: Get) {
     const hasRecord = await isSatisfiedBy(model, params.id);
     let status = 200;
 
@@ -23,7 +24,7 @@ export const crud = {
     response.status = status;
   },
 
-  async add({ request, response }: { request: any; response: any }) {
+  async add({ request, response }: Post) {
     console.log(model);
     const body = await request.body();
     const modelInstance: BaseModel = body.value;
@@ -41,7 +42,7 @@ export const crud = {
     response.status = status;
   },
 
-  async remove({ params, response }: { params: any; response: any }) {
+  async remove({ params, response }: Delete) {
     conn();
     const hasRecord = await isSatisfiedBy(model, params.id);
     let responseMessage: {} | void = {};
@@ -58,19 +59,11 @@ export const crud = {
     response.status = status;
   },
 
-  async getAll({ response }: { response: any }) {
+  async getAll({ response }: All) {
     response.body = await model.findAll(Where.field("id").notNull());
   },
 
-  async update({
-    request,
-    response,
-    params,
-  }: {
-    request: any;
-    response: any;
-    params: any;
-  }) {
+  async update({ request, response, params }: Put) {
     const body = await request.body();
     const hasRecord = await isSatisfiedBy(model, params.id);
     let responseMessage = {};
@@ -79,7 +72,7 @@ export const crud = {
     if (hasRecord) {
       await model.update({ id: params.id, ...body.value });
     } else {
-      responseMessage = { error: "User not found!" };
+      responseMessage = { error: "Transcript not found!" };
       status = 400;
     }
 

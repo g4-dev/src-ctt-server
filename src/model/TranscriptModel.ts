@@ -1,12 +1,7 @@
-import {
-  BaseModel,
-  Field,
-  FieldType,
-  Model,
-} from "https://deno.land/x/dso@v1.0.0/mod.ts";
+import { BaseModel, Field, FieldType, Model } from "../deps.ts";
 
 @Model("transcript")
-export class Transcript extends BaseModel {
+export class TranscriptModel extends BaseModel {
   @Field({
     type: FieldType.INT,
     primary: true,
@@ -16,11 +11,11 @@ export class Transcript extends BaseModel {
   id: number;
 
   @Field({ type: FieldType.STRING, length: 30 })
-  name: string;
+  name!: string;
 
   @Field({ type: FieldType.LONGTEXT, length: 255 })
-  content: string;
+  content?: string;
 
   @Field({ type: FieldType.STRING, length: 5 })
-  statut: string;
+  statut!: string;
 }

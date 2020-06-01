@@ -1,1 +1,1 @@
-export { doesExist } from './doesExist'
+export { doesExist } from "./doesExist";

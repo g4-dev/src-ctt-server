@@ -1,9 +1,10 @@
 {
   "imports": {
-    "@/": "./modules/",
+    "@/": "./",
+    "": "./modules",
     "controllers/": "./controllers/",
     "repo/": "./repo/",
     "model/": "./model/",
-    "config/": "./"
+    "config/": "./config.ts"
   }
 }

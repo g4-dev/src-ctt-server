@@ -10,9 +10,8 @@ import { TextProtoReader } from "https://deno.land/std/textproto/mod.ts";
 import { blue, green, red, yellow } from "https://deno.land/std/fmt/colors.ts";
 
 export const wsCli = async () => {
-  const endpoint = `ws://${Deno.args[0] || "127.0.0.1"}:${
-    Deno.args[1] || 8080
-  }`;
+  const endpoint = `ws://${Deno.args[0] || "127.0.0.1"}:${Deno.args[1] ||
+    8080}`;
   /** simple websocket cli */
   try {
     const sock = await connectWebSocket(endpoint);

@@ -7,7 +7,7 @@ BIN_DIR:=bin
 ARGS:=\
 	  --allow-env\
 	  --allow-read\
-	  --config=tsconfig.json\
+	  --config=$(PWD)/tsconfig.json\
 	  --allow-hrtime
 
 NET:=$(ARGS)\
@@ -35,13 +35,13 @@ help:
 
 # Run server
 start:
-	$(EXE) $(NET) $(ENTRY_DIR)/$(ENTRY)
+	$(EXE) $(NET) $(ENTRY)
 
 full:
-	$(EXE) $(FULL) $(ENTRY_DIR)/$(ENTRY)
+	$(EXE) $(FULL) $(ENTRY)
 
 lint:
-	deno fmt
+	deno fmt $(ENTRY_DIR)
 
 # Start with debugger
 debug:

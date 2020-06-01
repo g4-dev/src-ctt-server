@@ -1,10 +1,12 @@
-import { dso } from "../db.ts";
+import { dso } from "../config.ts";
 // En
-import { User } from "./User.ts";
-import { Transcript } from "./Transcript.ts";
+import { UserModel } from "./UserModel.ts";
+import { TranscriptModel } from "./TranscriptModel.ts";
 
 // yield entities;
-export const user = dso.define(User),
-  transcript = dso.define(Transcript);
+export const user = dso.define(UserModel),
+  transcript = dso.define(TranscriptModel);
+// yield Models
+export { UserModel, TranscriptModel };
 
 export { dso };
