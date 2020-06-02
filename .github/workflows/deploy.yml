@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  pull_request:
+    branches:
+      - prod
+      - develop
+  push:
+    branches:
+      - prod
+      - develop
+
+jobs:
+  build:
+    env:
+      # CI: true
+      # CI_USER_EMAIL: ${{ secrets.CI_USER_EMAIL }}
+      # CI_USER_NAME: ${{ secrets.CI_USER_NAME }}
+      # CI_USER_PAT: ${{ secrets.CI_USER_PAT }}
+      DENO_INSTALL: "/Users/runner/.local"
+
+    runs-on:
+      - self-hosted
+      - ubuntu
+      - windows-latest
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: denolib/setup-deno@master
+        with:
+          deno-version: v1.x
+
+      - name: unit tests
+        run: |
+          export PATH=$DENO_INSTALL/bin:$PATH
+          console/tests
+
+      - name: deno format check
+        run: |
+          export PATH=$DENO_INSTALL/bin:$PATH
+          deno fmt --check
