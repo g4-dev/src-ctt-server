@@ -1,13 +1,13 @@
 import { transcript } from "../model/index.ts";
-import { crud } from "../controllers/transcriptController.ts";
+import { TranscriptController } from "../controllers/transcriptController.ts";
 
-crud.init(transcript);
+let c = new TranscriptController(transcript);
 
 export default (router: any) => {
   router
     //.get("/transcripts", crud.getAll)
-    //.get("/transcripts/:id", crud.getDetails)
-    .post("/transcripts", crud.add);
+    .get("/transcripts/:id", c.getDetails)
+    .post("/transcripts", c.add);
   //.put("/transcripts/:id", crud;update)
   //.delete("/transcripts/:id", crud.remove);
 

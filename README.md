@@ -60,28 +60,25 @@ Voici un aperçu de l'organisation :
 
 ```
 ├── app.ts : fichier d'entrée pour le serveur
-├── config : Variables de configuration
-│   ├── db.ts
-│   └── env.ts
+├── config.ts : Variables de configuration
+│   ├── db (ORM dso)
+│   └── env
 ├── controllers (TODO:orga à revoir)
 │   ├── 404.ts
 │   ├── errorHandler.ts
-│   ├── transcript
+│   ├── transcriptController
 │   │   └── CRUD...
-│   └── user
-│       ├── add.ts
-│       ├── delete.ts
-│       ├── getAll.ts
-│       ├── getDetails.ts
-│       └── update.ts
+│   └── authController
+│       --> JWT / bcrypt
 ├── model (=entités)
+│   ├── index.ts --> renvoyé toutes les entités construites par dso
 │   ├── transcript.ts
 │   └── user.ts
 ├── modules
 │   └── ... modules à réutiliser
 ├── repo : Opérations complexes dans la base de donnée
-│   ├── transcript.ts
-│   └── user.ts
+│   ├── transcriptRepo.ts
+│   └── userRepo.ts
 ├── routes
 │   └── transcript.ts
 ├── services
@@ -127,10 +124,10 @@ Base de donnée mysql 8 à installer en local
 - Lancer le script de création avec
 
 ```sh
-mysql -u root -proot < src/mysql/init.sql
+mysql -u root -proot < mysql/init.sql
 ```
 
-` pour créer la base et l'utilisateur
+` pour créer la base et l'utilisateur correspondant
 
 2. Développement
 
@@ -144,7 +141,7 @@ mysql -u root -proot < src/mysql/init.sql
 
 # Ui
 
-On sépare dans ce projet complètement l'interface du back end pour rester sur une utilisation simple des microservices
+On sépare dans ce projet complètement l'interface du back end pour rester sur une utilisation simple des microservices dans l'UI
 
 # Déploiement
 

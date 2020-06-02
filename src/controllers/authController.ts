@@ -3,27 +3,32 @@ import { validateJwt } from "../deps.ts";
 import { makeJwt, Jose, Payload, Where } from "../deps.ts";
 import { user, UserModel } from "../model/index.ts";
 import { JWT_KEY, conn } from "../config.ts";
-import { Put, All, Delete, Post, Get } from "../interfaces/verbs.ts";
+import { Put, All, Delete, Post, Get } from "@/interfaces/index.ts";
 
 export const auth = {
   // For regiserting a user with the name, emailid and password
   async register({ request, response }: Post) {
-    const { password } = request.body;
+    const { secret }: UserModel = request.body;
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = secret ? await bcrypt.hash(secret, salt) : null;
 
-    const newUser: UserModel = {
-      secret: hashedPassword,
+    let newUser: UserModel | undefined = {
       ...request.body,
+      ...(secret ? { secret: hashedPassword } : {}),
     };
 
-    conn();
-    await user.insert(newUser);
-
-    response.status = 202; // TODO verify if it's good code
-    response.body = {
-      message: "Added the user successfully!",
-    };
+    console.log(newUser);
+    if (!newUser) {
+      response.status = 500;
+      response.body = { error: "Invalid user infos" };
+    } else {
+      conn();
+      await user.insert(newUser);
+      response.status = 201;
+      response.body = {
+        message: "Added the user successfully!",
+      };
+    }
   },
 
   // TODO
@@ -34,7 +39,7 @@ export const auth = {
     const { email, password } = request.body;
 
     const loginUser: any | undefined = await user.findOne(
-      Where.field("email").eq(email),
+      Where.field("email").eq(email)
     );
 
     if (!loginUser) {
@@ -46,17 +51,17 @@ export const auth = {
         response.status = 403;
         response.body = "Wrong password provided!";
       } else {
-        const jwt_payload: Payload = {
+        const jwtPayload: Payload = {
           iss: user.email,
         };
-        const jwt_header: Jose = {
+        const jwtHeader: Jose = {
           alg: "HS256",
           typ: "JWT",
         };
 
         const token = makeJwt({
-          header: jwt_header,
-          payload: jwt_payload,
+          header: jwtHeader,
+          payload: jwtPayload,
           key: JWT_KEY,
         });
 
@@ -72,7 +77,7 @@ export const auth = {
   // For getting all the users
   async getAllUsers({ response }: All) {
     const allUsers: any | undefined = await user.findAll(
-      Where.field("email").notNull(),
+      Where.field("email").notNull()
     );
 
     if (!allUsers) {
@@ -88,7 +93,7 @@ export const auth = {
   async getUserByEmail({ params, response }: Get) {
     const { email } = params.query;
     const fetchedUser: any | undefined = await user.findOne(
-      Where.field("email").eq(email),
+      Where.field("email").eq(email)
     );
 
     if (!fetchedUser || !email) {
@@ -107,7 +112,7 @@ export const auth = {
   async deleteUser({ params, response }: Delete) {
     const { email, id } = params.body;
     const fetchedUser: any | undefined = await user.findOne(
-      Where.field("email").eq(email),
+      Where.field("email").eq(email)
     );
     console.log(fetchedUser);
 

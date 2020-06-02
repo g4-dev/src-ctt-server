@@ -1,16 +1,15 @@
 {
+  "editor.defaultFormatter": null,
   "editor.formatOnSave": true,
   "javascript.validate.enable": false,
   "telemetry.enableCrashReporter": false,
   "telemetry.enableTelemetry": false,
   "path-intellisense.extensionOnImport": true,
-  "[javascript|typescript]": {
-    "editor.defaultFormatter": "justjavac.vscode-deno"
-  },
   "files.associations": {
     "*.yml": "yaml",
     ".denonrc": "json"
   },
   "deno.enabled": true,
-  "deno.importmap": "./src/import-map.json"
+  "deno.importmap": "../src/import-map.json",
+  "deno.autoFmtOnSave": true
 }

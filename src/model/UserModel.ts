@@ -2,14 +2,14 @@ import { BaseModel, Field, FieldType, Model } from "../deps.ts";
 
 // Define an user entity
 @Model("user")
-export class UserModel extends BaseModel {
+class UserModel extends BaseModel {
   @Field({
     type: FieldType.INT,
     primary: true,
     length: 11,
     autoIncrement: true,
   })
-  id: number;
+  id!: number;
 
   @Field({ type: FieldType.STRING, length: 30 })
   name!: string;
@@ -27,5 +27,9 @@ export class UserModel extends BaseModel {
   secret!: string;
 
   @Field({ type: FieldType.BOOLEAN })
-  valid!: boolean;
+  isValid!: boolean;
 }
+
+interface UserContract extends UserModel {}
+
+export { UserContract, UserModel };

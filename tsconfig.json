@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowJs": true,
     "experimentalDecorators": true,
-    "strictPropertyInitialization": false,
+    "strictPropertyInitialization": true,
     "emitDecoratorMetadata": true,
     "module": "esnext",
     "plugins": [

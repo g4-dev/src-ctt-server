@@ -1,2 +1,0 @@
-DROP DATABASE IF EXISTS `ctt_db`;
-DROP USER IF EXISTS `ctt_user`;

@@ -11,14 +11,16 @@ ARGS:=\
 	  --allow-hrtime
 
 NET:=$(ARGS)\
-	  --allow-net
-
-BIN:=$(NET)\
-	  --allow-write\
+	  --allow-net\
 	  --unstable\
 	  --importmap=$(IMPORT_MAP)
 
+BIN:=$(NET)\
+	  --allow-write\
+
+
 EXE:=cd $(ENTRY_DIR) && deno run
+DEBUG_EXE:=cd $(ENTRY_DIR) && denon run
 
 # Deployment (override this in Makefile)
 REMOTE_DIR_DEPLOY:=/var/www
@@ -45,10 +47,10 @@ lint:
 
 # Start with debugger
 debug:
-	$(eval ARGS+=--debug)
-	denon run $(NET) $(ENTRY_DIR)/$(ENTRY)
-	@echo 'Started in Debug mode : '
+	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
+	$(DEBUG_EXE) $(NET)  $(ENTRY)
+	#--inspect-brk
 
 deploy:
 	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\
