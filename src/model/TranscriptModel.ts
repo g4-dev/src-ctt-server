@@ -20,6 +20,4 @@ class TranscriptModel extends BaseModel {
   statut!: string;
 }
 
-interface TranscriptContract extends TranscriptModel {}
-
-export { TranscriptContract, TranscriptModel };
+export { TranscriptModel };

@@ -1,2 +1,12 @@
 *.log
 .DS_Store
+node_modules
+
+# Ide
+.idea
+
+# ext
+*.orig
+*.pyc
+*.swp
+*.bak

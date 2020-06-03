@@ -30,6 +30,4 @@ class UserModel extends BaseModel {
   isValid!: boolean;
 }
 
-interface UserContract extends UserModel {}
-
-export { UserContract, UserModel };
+export { UserModel };

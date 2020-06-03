@@ -1,6 +1,4 @@
-import { bcrypt } from "../deps.ts";
-import { validateJwt } from "../deps.ts";
-import { makeJwt, Jose, Payload, Where } from "../deps.ts";
+import { validateJwt, bcrypt, makeJwt, Jose, Payload, Where } from "../deps.ts";
 import { user, UserModel } from "../model/index.ts";
 import { JWT_KEY, conn } from "../config.ts";
 import { Put, All, Delete, Post, Get } from "@/interfaces/index.ts";
@@ -8,13 +6,16 @@ import { Put, All, Delete, Post, Get } from "@/interfaces/index.ts";
 export const auth = {
   // For regiserting a user with the name, emailid and password
   async register({ request, response }: Post) {
-    const { secret }: UserModel = request.body;
+    let { secret, name, email, familyName, token }: UserModel = request.body;
     const salt = await bcrypt.genSalt(10);
-    const hashedPassword = secret ? await bcrypt.hash(secret, salt) : null;
+    secret = await bcrypt.hash(secret, salt);
 
-    let newUser: UserModel | undefined = {
-      ...request.body,
-      ...(secret ? { secret: hashedPassword } : {}),
+    let newUser = { // TODO find an efficient way of dynamic typing
+      secret: secret,
+      name: name,
+      email: email,
+      familyName: familyName,
+      token: token,
     };
 
     console.log(newUser);
@@ -39,7 +40,7 @@ export const auth = {
     const { email, password } = request.body;
 
     const loginUser: any | undefined = await user.findOne(
-      Where.field("email").eq(email)
+      Where.field("email").eq(email),
     );
 
     if (!loginUser) {
@@ -77,7 +78,7 @@ export const auth = {
   // For getting all the users
   async getAllUsers({ response }: All) {
     const allUsers: any | undefined = await user.findAll(
-      Where.field("email").notNull()
+      Where.field("email").notNull(),
     );
 
     if (!allUsers) {
@@ -93,7 +94,7 @@ export const auth = {
   async getUserByEmail({ params, response }: Get) {
     const { email } = params.query;
     const fetchedUser: any | undefined = await user.findOne(
-      Where.field("email").eq(email)
+      Where.field("email").eq(email),
     );
 
     if (!fetchedUser || !email) {
@@ -112,7 +113,7 @@ export const auth = {
   async deleteUser({ params, response }: Delete) {
     const { email, id } = params.body;
     const fetchedUser: any | undefined = await user.findOne(
-      Where.field("email").eq(email)
+      Where.field("email").eq(email),
     );
     console.log(fetchedUser);
 

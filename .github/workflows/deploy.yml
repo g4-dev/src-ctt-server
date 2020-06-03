@@ -3,11 +3,11 @@ name: ci
 on:
   pull_request:
     branches:
-      - prod
+      - master
       - develop
   push:
     branches:
-      - prod
+      - master
       - develop
 
 jobs:
@@ -22,7 +22,6 @@ jobs:
     runs-on:
       - self-hosted
       - ubuntu
-      - windows-latest
 
     steps:
       - uses: actions/checkout@master
@@ -33,7 +32,7 @@ jobs:
       - name: unit tests
         run: |
           export PATH=$DENO_INSTALL/bin:$PATH
-          console/tests
+          echo 'no test for now'
 
       - name: deno format check
         run: |

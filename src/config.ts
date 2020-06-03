@@ -19,13 +19,14 @@ const {
 // Database connection
 dso.showQueryLog = APP_ENV === "dev";
 export const conn = (): any => {
-  dso.connect({
-    hostname: DB_HOST || "127.0.0.1",
-    username: DB_USER,
-    password: DB_PASSWORD || "",
-    port: Number(DB_PORT) || 3306,
-    db: DB_NAME,
-  });
-};
+    dso.connect({
+      hostname: DB_HOST || "127.0.0.1",
+      username: DB_USER,
+      password: DB_PASSWORD || "",
+      port: Number(DB_PORT) || 3306,
+      db: DB_NAME,
+    });
+  },
+  close = () => dso.close();
 
 export { dso, APP_HOST, APP_PORT, JWT_KEY };

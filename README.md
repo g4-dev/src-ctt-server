@@ -3,6 +3,7 @@
 ## TODO
 
 - Déploiement après validation CI d'un merge PR
+- documentation_url
 
 ### Call2Text server
 
@@ -29,7 +30,7 @@ iwr https://deno.land/x/install/install.ps1 -useb | iex
 ```
 
 > Installer aussi denon si jamais vous voulez watch les changements de fichier et reload le serveur
-`deno install --allow-read --allow-run --allow-write -f --unstable https://deno.land/x/denon/denon.ts`
+> `deno install --allow-read --allow-run --allow-write -f --unstable https://deno.land/x/denon/denon.ts`
 
 ## Extensions à configurer
 
@@ -133,15 +134,15 @@ mysql -u root -proot < mysql/init.sql
 
 > <span style='color:red;'><b>[WARNING]</b></span> Faire des dumps réguliers à envoyer dans sa PR pour bien garder un modèle / base consistante
 
-
 3. Erreur possible
 
 [Pb de plugin de connection](https://stackoverflow.com/questions/51179516/sequel-pro-and-mysql-connection-failed)
 
-
 # Ui
 
 On sépare dans ce projet complètement l'interface du back end pour rester sur une utilisation simple des microservices dans l'UI
+
+Suivre ce doc [README Ctt UI](ui/README.md)
 
 # Déploiement
 

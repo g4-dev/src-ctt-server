@@ -1,5 +1,6 @@
-import { BaseModel, Where } from "../../deps.ts";
+import { BaseModel, Where, HttpError } from "../../deps.ts";
 import { conn } from "../../config.ts";
+import { isHttpError, Status, STATUS_TEXT } from "../../deps.ts";
 import { initDataModule, doesExist } from "./index.ts";
 import {
   Put,
@@ -11,43 +12,32 @@ import {
 } from "@/interfaces/index.ts";
 
 let model: BaseModel;
+// response pre filled field
+let status: number = 200;
+let error: ApiError = undefined;
 
 export abstract class Crud implements CrudInterface {
   constructor(newModel: BaseModel) {
     model = newModel;
     initDataModule(newModel);
+    conn();
   }
 
   public async getDetails({ params, response }: Get) {
-    let status: number | null = null;
-    try {
-      if (!(await doesExist(params.id))) {
-        status = 404;
-        throw new Error(`No data for ${model.modelName}`);
-      } else {
-        response.body = await model.findById(params.id);
-        status = 200;
-      }
-    } catch (e) {
-      response.body = { error: e };
-      status = status ?? 500;
-    } finally {
-      response.status = status;
-
-      return response;
+    if (!doesExist(params.id)) {
+      throw new HttpError(STATUS_TEXT.get(Status.NotFound));
+    } else {
+      response.body = await model.findById(params.id);
     }
   }
 
   public async add({ request, response }: Post) {
-    console.log(model);
     const body = await request.body();
     const modelInstance: BaseModel = body.value;
-
-    conn();
     const id = await model.insert(modelInstance);
 
     if (!id) {
-      response.body = { error: "Invalid request!" };
+      error = "Invalid request!";
       response.status = 400;
     } else {
       response.body = `Ressource created : ${id}`;
@@ -58,7 +48,6 @@ export abstract class Crud implements CrudInterface {
   }
 
   async remove({ params, response }: Delete) {
-    conn();
     const hasRecord = await doesExist(params.id);
     let status = 200;
     if (hasRecord) {
@@ -69,13 +58,12 @@ export abstract class Crud implements CrudInterface {
       response.body = { error: "Data not found!" };
       status = 400;
     }
-    generateResponse(status, response);
+    generateResponse(response, status);
 
     return response;
   }
 
   async getAll({ response }: All) {
-    conn();
     return (response.body = await model.findAll(Where.field("id").notNull()));
   }
 
@@ -84,26 +72,32 @@ export abstract class Crud implements CrudInterface {
     const hasRecord = await doesExist(params.id);
     let status = 200;
     if (hasRecord) {
-      conn();
-      await model.update({ id: params.id, ...body.value });
-      response.body = { message: "Ressource updated" };
+      response.body = await model.update({ id: params.id, ...body.value });
     } else {
       response.body = { error: "Transcript not found!" };
       status = 400;
     }
 
-    return generateResponse(status, response);
+    return generateResponse(response, status);
   }
 }
 
+// Response builder module
+type ApiError = string | Error | undefined;
+
+type Response = {
+  body: {};
+  status: number;
+  error: ApiError;
+};
+
 function generateResponse(
+  response: Response,
   code: number,
-  response: {
-    body: {};
-    status: number;
-  },
-): {} {
+  error?: ApiError,
+): Response {
   response.status = code;
+  error ? (response.error = error) : null;
 
   return response;
 }
