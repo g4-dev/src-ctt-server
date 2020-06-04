@@ -1,2 +1,2 @@
-export * from "./restInterface.ts";
+export * from "./restInterfaces.ts";
 export { CrudInterface } from "./crudInterface.ts";

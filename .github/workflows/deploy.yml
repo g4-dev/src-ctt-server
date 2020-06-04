@@ -1,4 +1,4 @@
-name: ci
+name: deploy
 
 on:
   pull_request:
@@ -22,6 +22,7 @@ jobs:
     runs-on:
       - self-hosted
       - ubuntu
+      - macos
 
     steps:
       - uses: actions/checkout@master
@@ -29,12 +30,7 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: unit tests
-        run: |
-          export PATH=$DENO_INSTALL/bin:$PATH
-          echo 'no test for now'
+      - run: make start
 
-      - name: deno format check
-        run: |
-          export PATH=$DENO_INSTALL/bin:$PATH
-          deno fmt --check
+      - name: deploy after last check
+        run: make deploy

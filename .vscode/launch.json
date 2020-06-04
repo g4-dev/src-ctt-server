@@ -5,9 +5,17 @@
       "name": "Deno",
       "type": "node",
       "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "runtimeExecutable": "deno",
-      "runtimeArgs": ["run", "--inspect-brk", "-A", "<entry_point>"],
+      "cwd": "${workspaceFolder}/src",
+      "runtimeExecutable": "denon",
+      "runtimeArgs": [
+        "run",
+        "--inspect-brk",
+        "-A",
+        "--config=${workspaceFolder}/tsconfig.json",
+        "--unstable",
+        "--importmap=import-map.json",
+        "app.ts"
+      ],
       "port": 9229
     }
   ]

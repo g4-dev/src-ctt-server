@@ -40,10 +40,13 @@ start:
 	$(EXE) $(NET) $(ENTRY)
 
 full:
-	$(EXE) $(FULL) $(ENTRY)
+	$(BIN) $(FULL) $(ENTRY)
 
 lint:
 	deno fmt $(ENTRY_DIR)
+
+tests:
+	deno test $(ENTRY_DIR)/**tests/**
 
 # Start with debugger
 debug:

@@ -11,5 +11,6 @@
   },
   "deno.enabled": true,
   "deno.importmap": "../src/import-map.json",
-  "deno.autoFmtOnSave": true
+  "deno.autoFmtOnSave": true,
+  "deno.unstable": true
 }

@@ -50,8 +50,9 @@ or use **yarn**:
 
 `make start` ou `make debug`
 
-3. En debug : Ouvrir inspect tools sur chrome
-   [chrome://inspect/#devices](chrome://inspect/#devices)
+3. En debug : **Le top**
+
+![Debugger](docs/img/debugger.png)
 
 # Philosophie
 
@@ -71,7 +72,7 @@ Voici un aperçu de l'organisation :
 │   │   └── CRUD...
 │   └── authController
 │       --> JWT / bcrypt
-├── model (=entités)
+├── model (= entités)
 │   ├── index.ts --> renvoyé toutes les entités construites par dso
 │   ├── transcript.ts
 │   └── user.ts
@@ -111,18 +112,21 @@ On essaie de suivre ce guide pour pas mettre du code poubelle. Petit projet ne v
 
 - ORM : [Dso](https://github.com/manyuanrong/dso)
 - Router : [Oak](https://deno.land/x/oak/)
+- Schema API : [Jbq](https://github.com/krnik/jbq/tree/master)
 
 # Base de donnée
 
 Base de donnée mysql 8 à installer en local
 
-> **[Attention]** : Vos identifiants mysql peuvent changer
-
 1. Pour lancer une base de donnée en local
 
 - Installer mysql 8 Server
   [Procédure](https://dev.mysql.com/doc/mysql/en/windows-installation.html)
+
+Ou utiliser le mysql 8 server de wamp / xamp
+
 - Lancer le script de création avec
+  > **[Attention]** : Vos identifiants mysql peuvent changer
 
 ```sh
 mysql -u root -proot < mysql/init.sql
@@ -142,7 +146,7 @@ mysql -u root -proot < mysql/init.sql
 
 On sépare dans ce projet complètement l'interface du back end pour rester sur une utilisation simple des microservices dans l'UI
 
-Suivre ce doc [README Ctt UI](ui/README.md)
+Suivre ce lien vers le repo [src-ctt-ui](https://github.com/g4-dev/src-ctt-ui)
 
 # Déploiement
 

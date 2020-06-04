@@ -1,0 +1,29 @@
+name: test
+
+on: [push]
+
+jobs:
+  build:
+    env:
+      DENO_INSTALL: "/Users/runner/.local"
+
+    runs-on: ubuntu-18.04
+
+    steps:
+      - uses: actions/checkout@develop
+        with:
+          ref: "develop"
+
+      - uses: denolib/setup-deno@master
+        with:
+          deno-version: v1.x
+
+      - name: unit tests
+        run: |
+          export PATH=$DENO_INSTALL/bin:$PATH
+          echo 'no test for now'
+
+      - name: deno format check
+        run: |
+          export PATH=$DENO_INSTALL/bin:$PATH
+          deno fmt --check

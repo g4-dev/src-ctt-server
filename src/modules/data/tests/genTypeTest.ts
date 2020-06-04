@@ -1,7 +1,7 @@
 import { MapSchema, asSchema } from "../genType.ts";
 import { assert } from "https://deno.land/std/testing/asserts.ts";
 
-// Exemples
+// Person test definition
 const personSchema = asSchema({ name: "string", age: "integer" });
 type Person = MapSchema<typeof personSchema>;
 
@@ -15,8 +15,7 @@ const person: Person = {
   age: 35,
 };
 
-assert(person as PersonExpected);
-
+// Place test def
 const placeSchema = asSchema(
   {
     name: "string",
@@ -42,4 +41,8 @@ const place: Place = {
   nicePlaceToVisit: true,
 };
 
-assert(place as PlaceExpected);
+// suite
+Deno.test("type tests", () => {
+  assert(person as PersonExpected);
+  assert(place as PlaceExpected);
+});
