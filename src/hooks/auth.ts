@@ -1,19 +1,7 @@
 // Auth verify
 import { Context, HookTarget, ForbiddenError } from "../deps.ts";
 import { validateJwt } from "https://deno.land/x/djwt/validate.ts";
-import { JWT_KEY } from "../env.ts";
-
-/**
- * Create a default configuration
- */
-export const JwtConfig = {
-  header: "Authorization",
-  schema: "Bearer",
-  secretKey: JWT_KEY || "",
-  expirationTime: 60000,
-  type: "JWT",
-  alg: "HS256",
-};
+import { JwtConfig } from "../config/jwt.ts";
 
 type PayloadType = string;
 

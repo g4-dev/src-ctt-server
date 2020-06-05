@@ -13,6 +13,5 @@ export const {
   DB_NAME,
   // Api auth
   JWT_KEY,
+  JWT_TTL,
 } = config();
-
-//export { APP_HOST, APP_PORT, JWT_KEY };
