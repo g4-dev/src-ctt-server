@@ -4,20 +4,7 @@ ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
 BIN_DIR:=bin
 # Argument group for different usages
-ARGS:=\
-	  --allow-env\
-	  --allow-read\
-	  --config=$(PWD)/tsconfig.json\
-	  --allow-hrtime
-
-NET:=$(ARGS)\
-	  --allow-net\
-	  --unstable\
-	  --importmap=$(IMPORT_MAP)
-
-BIN:=$(NET)\
-	  --allow-write\
-
+ARGS:= -A --importmap=$(IMPORT_MAP) --unstable --config=$(PWD)/tsconfig.json
 
 EXE:=cd $(ENTRY_DIR) && deno run
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon run
@@ -37,10 +24,10 @@ help:
 
 # Run server
 start:
-	$(EXE) $(NET) $(ENTRY)
+	$(EXE) $(ARGS) $(ENTRY)
 
 full:
-	$(BIN) $(FULL) $(ENTRY)
+	$(EXE) $(ARGS) $(ENTRY)
 
 lint:
 	deno fmt $(ENTRY_DIR)

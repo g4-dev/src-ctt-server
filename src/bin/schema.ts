@@ -1,8 +1,6 @@
-import { dso } from "model/index.ts";
-import { conn } from "@/config.ts";
+import { db } from "../config/initDb.ts";
 
 (async () => {
   console.info("Updating Schema...");
-  conn();
-  await dso.sync(true);
+  await db.sync({ drop: true });
 })();

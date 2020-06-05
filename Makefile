@@ -14,7 +14,7 @@ help_more:
 
 # Project binary to update db schema
 schema:
-	$(EXE) $(BIN) $(BIN_DIR)/schema.ts
+	$(EXE) $(ARGS) $(BIN_DIR)/schema.ts
 
 # deploy for alwaydata datacenter
 deploy-ald: deploy

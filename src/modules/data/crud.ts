@@ -1,6 +1,5 @@
-import { BaseModel, Where, HttpError } from "../../deps.ts";
+import { BaseModel, Where} from "../../deps.ts";
 import { conn } from "../../config.ts";
-import { isHttpError, Status, STATUS_TEXT } from "../../deps.ts";
 import { initDataModule, doesExist } from "./index.ts";
 import {
   Put,
@@ -25,7 +24,7 @@ export abstract class Crud implements CrudInterface {
 
   public async getDetails({ params, response }: Get) {
     if (!doesExist(params.id)) {
-      throw new HttpError(STATUS_TEXT.get(Status.NotFound));
+      throw new Error("err");
     } else {
       response.body = await model.findById(params.id);
     }
