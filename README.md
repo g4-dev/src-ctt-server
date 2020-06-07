@@ -1,9 +1,12 @@
 # src-ctt-server
 
+![test](https://github.com/g4-dev/src-ctt-server/workflows/test/badge.svg)
+![deploy](https://github.com/g4-dev/src-ctt-server/workflows/deploy/badge.svg)
+
 ## TODO
 
 - Déploiement après validation CI d'un merge PR
-- documentation_url
+- documentation UI
 
 ### Call2Text server
 
@@ -62,45 +65,35 @@ Voici un aperçu de l'organisation :
 
 ```
 ├── app.ts : fichier d'entrée pour le serveur
-├── config.ts : Variables de configuration
-│   ├── db (ORM dso)
-│   └── env
-├── controllers (TODO:orga à revoir)
-│   ├── 404.ts
-│   ├── errorHandler.ts
-│   ├── transcriptController
-│   │   └── CRUD...
-│   └── authController
+├── env.ts : Récupères des variable d'env
+├── config : Variables de configuration
+│   ├── initDb (ORM)
+│   ├── openapi
+│   ├── jwt
+│   └── container (Alausor)
+├── hooks : Code sur certaines requètes / controller
+│   └── auth (bloque l'accès si pas de token)
+├── middlewares : Placer du code entre chaques requètes
+│   └── log
+├── areas
+│   ├── transcriptArea
+│   │   └── Controller
+│   └── authArea
 │       --> JWT / bcrypt
 ├── model (= entités)
-│   ├── index.ts --> renvoyé toutes les entités construites par dso
+│   ├── index.ts --> renvoyé toutes les entités
 │   ├── transcript.ts
 │   └── user.ts
 ├── modules
+│   ├── data : opérations diverses
+│   ├── websocket (ws)
 │   └── ... modules à réutiliser
-├── repo : Opérations complexes dans la base de donnée
+├── repo : Opérations complexes BDD
 │   ├── transcriptRepo.ts
 │   └── userRepo.ts
-├── routes
-│   └── transcript.ts
-├── services
-│   └── transcriptService.ts
 ```
 
 Des fichiers `index.ts` peuvent être placés à la racine de chaque dossier pour récupérer des variables / fonctions / classes / interfaces et les exporter pour les réutiliser plus facilement.
-
-```js
-// index.ts
-export { uneVar } from './foo/uneVar.ts').
-// On exporte tout ce qu'il y a dans ce fichier soit une class Class et une interface ClassInterface
-export * from './foo/grosseClasse.ts').
-```
-
-```js
-// j-importe.ts
-import { uneVar } from './foo/index.ts').
-import { Class, ClassInterface } from './foo/index.ts').
-```
 
 # Style de code
 
@@ -110,9 +103,9 @@ On essaie de suivre ce guide pour pas mettre du code poubelle. Petit projet ne v
 
 # Librairies Deno utilisés
 
-- ORM : [Dso](https://github.com/manyuanrong/dso)
-- Router : [Oak](https://deno.land/x/oak/)
-- Schema API : [Jbq](https://github.com/krnik/jbq/tree/master)
+- ORM : [deno db](https://github.com/eveningkid/denodb)
+- Framework web : [Alausor](https://github.com/alosaur/alosaur)
+- Validation Schema API : [Jbq](https://github.com/krnik/jbq/tree/master)
 
 # Base de donnée
 
@@ -132,13 +125,9 @@ Ou utiliser le mysql 8 server de wamp / xamp
 mysql -u root -proot < mysql/init.sql
 ```
 
-` pour créer la base et l'utilisateur correspondant
+pour créer la base et l'utilisateur correspondant et puis **`make schema`**
 
-2. Développement
-
-> <span style='color:red;'><b>[WARNING]</b></span> Faire des dumps réguliers à envoyer dans sa PR pour bien garder un modèle / base consistante
-
-3. Erreur possible
+2. Erreur possible
 
 [Pb de plugin de connection](https://stackoverflow.com/questions/51179516/sequel-pro-and-mysql-connection-failed)
 
@@ -150,4 +139,16 @@ Suivre ce lien vers le repo [src-ctt-ui](https://github.com/g4-dev/src-ctt-ui)
 
 # Déploiement
 
-`make deploy`
+Par la CI la commande `make deploy` permet de déployer l'application [ici](http://pandemik699.alwaysdata.net/)
+
+# FAQ
+
+**La génération openapi ne fonctionne pas ?**
+
+Il faut remplacer les retour de la [classe](src/config/openapi.ts) `AlosaurOpenApiBuilder` comme
+
+`public addTitle(title: string): AlosaurOpenApiBuilder`
+
+à remplacer par
+
+`: AlosaurOpenApiBuilder<T>`

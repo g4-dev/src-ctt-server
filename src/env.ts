@@ -1,10 +1,11 @@
 import { config } from "https://deno.land/x/dotenv/mod.ts";
 
+const APP_ENV = Deno.env.get("APP_ENV") || "dev";
+
 export const {
   // App
   APP_HOST,
   APP_PORT,
-  APP_ENV,
   // Db
   DB_USER,
   DB_HOST,
@@ -14,4 +15,4 @@ export const {
   // Api auth
   JWT_KEY,
   JWT_TTL,
-} = config();
+} = config({ path: `.env.${APP_ENV}` });

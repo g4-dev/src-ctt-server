@@ -12,5 +12,17 @@
   "deno.enabled": true,
   "deno.importmap": "../src/import-map.json",
   "deno.autoFmtOnSave": true,
-  "deno.unstable": true
+  "deno.unstable": true,
+  "[markdown]": {
+    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
 }

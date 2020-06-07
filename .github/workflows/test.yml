@@ -1,19 +1,19 @@
 name: test
 
-on: [push]
+on: [pull_request]
 
 jobs:
   build:
     env:
-      DENO_INSTALL: "/Users/runner/.local"
-
-    runs-on: ubuntu-18.04
+      DENO_INSTALL: '/Users/runner/.local'
+    name: Ctt-server in ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
-      - uses: actions/checkout@develop
-        with:
-          ref: "develop"
-
+      - uses: actions/checkout@master
       - uses: denolib/setup-deno@master
         with:
           deno-version: v1.x
@@ -21,7 +21,7 @@ jobs:
       - name: unit tests
         run: |
           export PATH=$DENO_INSTALL/bin:$PATH
-          echo 'no test for now'
+          make test
 
       - name: deno format check
         run: |

@@ -9,10 +9,12 @@ ARGS:= -A --importmap=$(IMPORT_MAP) --unstable --config=$(PWD)/tsconfig.json
 EXE:=cd $(ENTRY_DIR) && deno run
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon run
 
-# Deployment (override this in Makefile)
+# Deployment (need to override these vars in Makefile)
 REMOTE_DIR_DEPLOY:=/var/www
 SSH_ADDRESS:=site.test
 USER_DEPLOY:=root
+USER_PASS:=root
+GIT_URL:=
 
 .DEFAULT_GOAL := help
 .PRECIOUS: start debug
@@ -20,6 +22,8 @@ USER_DEPLOY:=root
 help:
 	@echo "[======== Deno Help ========]"
 	@echo "Usage: make start | debug"
+	@echo "Format: make lint"
+	@echo "Testing: make tests"
 	@$(MAKE) help_more || true
 
 # Run server
@@ -46,6 +50,11 @@ deploy:
 	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\
 	/bin/bash -c '\
 	git fetch --all && git reset --hard upstream/master;'"
+
+init-prod:
+	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\
+	/bin/bash -c '\
+	git clone $(GIT_URL)'"
 
 clear:
 	rm -rf *.log
