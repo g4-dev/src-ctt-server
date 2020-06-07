@@ -1,4 +1,4 @@
-import { Area } from "@/deps.ts";
+import { Area } from "../../deps.ts";
 import { AuthController } from "./authController.ts";
 
 @Area({

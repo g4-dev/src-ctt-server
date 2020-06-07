@@ -39,7 +39,7 @@ tests:
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) $(NET)  $(ENTRY)
+	$(DEBUG_EXE) -L debug $(ARGS) $(ENTRY)
 	#--inspect-brk
 
 deploy:

@@ -6,7 +6,7 @@ import {
 } from "https://deno.land/std/ws/mod.ts";
 
 /** websocket echo server */
-export const ws = async () => {
+(async () => {
   const port = Deno.args[0] || "8080";
   console.log(`websocket server is running on :${port}`);
   for await (const req of serve(`:${port}`)) {
@@ -28,9 +28,6 @@ export const ws = async () => {
             // text message
             console.log("ws:Text", ev);
             await sock.send(ev);
-          } else if (ev instanceof Uint8Array) {
-            // binary message
-            console.log("ws:Binary", ev);
           } else if (isWebSocketPingEvent(ev)) {
             const [, body] = ev;
             // ping
@@ -53,4 +50,4 @@ export const ws = async () => {
       await req.respond({ status: 400 });
     }
   }
-};
+})();

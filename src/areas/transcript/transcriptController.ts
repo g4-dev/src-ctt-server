@@ -7,31 +7,37 @@ import {
   Res,
   QueryParam,
   UseHook,
-} from "@/deps.ts";
-import { Transcript } from "@/model/index.ts";
+} from "../../deps.ts";
+import { Transcript, ITranscript } from "../../model/index.ts";
 import { TokenHook } from "../../hooks/auth.ts";
 
-@Controller("/transcripts")
+@UseHook(TokenHook)
+@Controller()
 export class TranscriptController {
-  @Get("/")
+  @Get()
   getAll() {
     return "List transcript";
   }
 
-  @Post("/")
-  async add(@Body(Transcript) data: Transcript) {
+  @Post()
+  async add(@Body(Transcript) data: ITranscript) {
     return {
       data,
       errors: data, ///await validate(data),
     };
   }
 
-  @UseHook(TokenHook)
-  @Get("/transcript/:id")
+  @Post("/update/:id")
+  async update(id: string, values: ITranscript) {
+    await Transcript.where("id", id).update(values as any);
+    return this.getOne(id);
+  }
+
+  @Get("/:id")
   getOne(
-    @Req() request: Request,
-    @Res() response: Response,
-    @QueryParam("id") id: string
+    @QueryParam("id") id: string,
+    @Req() request: Request | undefined = undefined,
+    @Res() response: Response | undefined = undefined,
   ) {
     return { text: id };
   }

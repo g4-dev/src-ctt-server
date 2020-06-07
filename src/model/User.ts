@@ -3,6 +3,12 @@ import { bcrypt, makeJwt, setExpiration, Jose, Payload } from "../deps.ts";
 import { nanoid } from "../deps.ts";
 import { JwtConfig } from "../config/jwt.ts";
 
+export interface IUser {
+  name: string;
+  token: string;
+  isMasterKey: boolean;
+}
+
 export class User extends Model {
   static table = "user";
   static timestamps = true;
@@ -14,6 +20,7 @@ export class User extends Model {
     },
     name: DataTypes.STRING,
     token: DataTypes.STRING,
+    isMasterKey: DataTypes.BOOLEAN,
   };
 
   static defaults = {
@@ -33,8 +40,8 @@ export class User extends Model {
     return makeJwt({ header, payload, key: JwtConfig.secretKey });
   }
 
-  static async hashPassword(password: string) {
+  static async hashToken(token: string) {
     const salt = await bcrypt.genSalt(8);
-    return bcrypt.hash(password, salt);
+    return bcrypt.hash(token, salt);
   }
 }

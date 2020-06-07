@@ -16,6 +16,12 @@ help_more:
 schema:
 	$(EXE) $(ARGS) $(BIN_DIR)/schema.ts
 
+openapi:
+	$(EXE) $(ARGS) config/openapi.ts
+
+ws:
+	$(EXE) $(ARGS) modules/ws/server.ts
+
 # deploy for alwaydata datacenter
 deploy-ald: deploy
 	curl --basic --request POST --user $(TOKEN): $(API)/site/$(ID)/restart/
