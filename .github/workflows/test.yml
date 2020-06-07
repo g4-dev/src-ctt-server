@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   build:
     env:
-      DENO_INSTALL: '/Users/runner/.local'
+      DENO_INSTALL: "/Users/runner/.local"
     name: Ctt-server in ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:

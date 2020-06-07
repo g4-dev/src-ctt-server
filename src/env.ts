@@ -2,7 +2,7 @@ import { config } from "https://deno.land/x/dotenv/mod.ts";
 
 export const {
   // App
-  APP_HOST,
+  IP,
   APP_PORT,
   // Db
   DB_USER,

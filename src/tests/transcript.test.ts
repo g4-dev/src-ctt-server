@@ -1,9 +1,9 @@
 import { assertEquals } from "./deps.ts";
 import { startServer, killServer } from "./test.utils.ts";
-import { APP_HOST, APP_PORT } from "../env.ts";
+import { IP, APP_PORT } from "../env.ts";
 const { test } = Deno;
 
-const baseUrl = `http://${APP_HOST}:${APP_PORT}/`;
+const baseUrl = `http://${IP}:${APP_PORT}/`;
 
 /**
  * Test cases
@@ -14,8 +14,7 @@ test({
     await startServer("./app.ts");
 
     try {
-      const r1 = await fetch(baseUrl + "/transcripts");
-      await r1.body.close();
+      const r1 = await fetch(baseUrl + "transcripts");
       assertEquals(r1.status, 404);
     } finally {
       killServer();
@@ -29,7 +28,7 @@ test({
     await startServer("./app.ts");
 
     try {
-      const response = await fetch(baseUrl + "/transcripts/1");
+      const response = await fetch(baseUrl + "transcripts/1");
       //const text = await response.text();
 
       assertEquals(response.status, 404);

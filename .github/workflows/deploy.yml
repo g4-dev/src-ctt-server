@@ -10,27 +10,10 @@ jobs:
     env:
       CI: true
       TOKEN: ${{ secrets.TOKEN }} # Always data token to deploy website
-      USER_DEPLOY: ${{ secrets.USER_DEPLOY }}
-      SSH_AUTH_KEY: ${{ secrets.SSH_AUTH_KEY }}
-      SSH_ADDRESS: ${{ secrets.SSH_ADDRESS }}
-      REMOTE_DIR_DEPLOY: /home/${{ env.USER_DEPLOY }}/www
-      # App
-      APP_HOST: ${{ secrets.APP_HOST }}
-      APP_PORT: 80
-      # Websocket
-      WS_HOST: ${{ secrets.APP_HOST }}
-      WS_PORT: 81
-      # Database
-      DB_HOST: ${{ secrets.DB_HOST }}
-      DB_PORT: ${{ secrets.DB_PORT }}
-      DB_USER: ${{ secrets.DB_USER }}
-      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      DB_NAME: ${{ secrets.DB_NAME }}
-      # Auth
-      JWT_KEY: ${{ secrets.JWT_KEY }}
-      JWT_TTL: 3600
+      SITE_ID: ${{ secrets.SITE_ID }} # Always data token to deploy website
+      TARGET: /home/${{ secrets.USER_DEPLOY }}/${{ github.event.repository.name }}
       # Deno vars
-      DENO_INSTALL: '/Users/runner/.local'
+      DENO_INSTALL: "/Users/runner/.local"
 
     runs-on: ubuntu-16.04
 
@@ -39,8 +22,18 @@ jobs:
       - uses: denolib/setup-deno@master
         with:
           deno-version: v1.x
-      # test server launch correctly
-      - run: timeout 15 make start
-      # deploy
-      - name: deploy after last check
-        run: make deploy-ald
+
+      - name: Push to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_ADDRESS }}
+          username: ${{ secrets.USER_DEPLOY }}
+          key: ${{ secrets.SSH_AUTH_KEY }}
+          script: |
+            cd ${{ env.TARGET }} && git fetch origin master
+            git update-index --refresh
+            git reset --hard origin/master
+            echo ${{ secrets.ENV_PROD }} > src/.env && chmod 400 src/.env
+
+      - name: refresh website
+        run: make refresh-site

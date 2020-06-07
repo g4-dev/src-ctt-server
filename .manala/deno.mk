@@ -20,7 +20,7 @@ GIT_URL:=https://github.com/$(ORG)/$(REPO).git
 GIT_DIR:=
 
 # Command by ssh
-ssh=ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "/bin/bash -c '$(1)'"
+ssh=ssh $(USER_DEPLOY)@$(SSH_ADDRESS) $(1)
 
 .DEFAULT_GOAL := help
 .PRECIOUS: start debug

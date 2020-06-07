@@ -7,7 +7,7 @@ const db = new Database("mysql", {
   username: DB_USER,
   password: DB_PASSWORD,
   database: DB_NAME,
-  port: Number(DB_PORT),
+  port: Number(DB_PORT) || 3306,
 });
 
 db.link([Transcript]);
