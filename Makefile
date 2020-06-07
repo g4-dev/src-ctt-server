@@ -1,14 +1,14 @@
 include .manala/deno.mk
 
-USER_DEPLOY=pandemik699
-SSH_ADDRESS=ssh-$(USER_DEPLOY).alwaysdata.net
-REMOTE_DIR_DEPLOY=/home/$(USER_DEPLOY)/www
+USER_DEPLOY?=
+SSH_ADDRESS?=
+REMOTE_DIR_DEPLOY:=
 GIT_URL:=https://github.com/g4-dev/src-ctt-server.git
 
 # API config for alwaysdata deploy
 API=https://api.alwaysdata.com/v1
 TOKEN?=
-ID?=601897
+SITE_ID?=
 
 help_more:
 	@echo "[====== src-ctt-server =====]"
@@ -25,4 +25,4 @@ ws:
 
 # deploy for alwaydata datacenter
 deploy-ald: deploy
-	curl --basic --request POST --user $(TOKEN): $(API)/site/$(ID)/restart/
+	curl --basic --request POST --user $(TOKEN): $(API)/site/$(SITE_ID)/restart/

@@ -10,11 +10,19 @@ EXE:=cd $(ENTRY_DIR) && deno run
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon run
 
 # Deployment (need to override these vars in Makefile)
-REMOTE_DIR_DEPLOY:=/var/www
-SSH_ADDRESS:=site.test
-USER_DEPLOY:=root
-USER_PASS:=root
-GIT_URL:=
+REMOTE_DIR_DEPLOY?=/var/www
+SSH_ADDRESS?=site.test
+USER_DEPLOY?=root
+SSH_AUTH_KEY?=
+SSH_AUTH_KEY_FILE:=auth_key_rsa
+GIT_URL?=
+
+# Command by ssh
+ssh=echo $(SSH_AUTH_KEY) >> $(SSH_AUTH_KEY_FILE);\
+	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) -i $(SSH_AUTH_KEY) "\
+	cd $(REMOTE_DIR_DEPLOY);\
+	/bin/bash -c '$(1)'"\
+	rm $(SSH_AUTH_KEY_FILE)
 
 .DEFAULT_GOAL := help
 .PRECIOUS: start debug
@@ -43,18 +51,17 @@ tests:
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) -L debug $(ARGS) $(ENTRY)
-	#--inspect-brk
+	$(DEBUG_EXE) -L debug $(ARGS) --inspect-brk $(ENTRY)
 
 deploy:
-	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\
+	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) -i $(SSH_AUTH_KEY) "cd $(REMOTE_DIR_DEPLOY);\
 	/bin/bash -c '\
-	git fetch --all && git reset --hard upstream/master;'"
+	git fetch --all && git reset --hard upstream/master || $(MAKE) init-prod'"
 
 init-prod:
-	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "cd $(REMOTE_DIR_DEPLOY);\
-	/bin/bash -c '\
-	git clone $(GIT_URL)'"
+	@$(call ssh, \
+	git clone $(GIT_URL)\
+	)
 
 clear:
 	rm -rf *.log

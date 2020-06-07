@@ -21,9 +21,11 @@ jobs:
       - name: unit tests
         run: |
           export PATH=$DENO_INSTALL/bin:$PATH
-          make test
+          make tests
 
       - name: deno format check
         run: |
           export PATH=$DENO_INSTALL/bin:$PATH
           deno fmt --check
+
+# TODO : e2e tests
