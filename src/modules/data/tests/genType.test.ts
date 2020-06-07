@@ -16,14 +16,12 @@ const person: Person = {
 };
 
 // Place test def
-const placeSchema = asSchema(
-  {
-    name: "string",
-    latitude: "float",
-    longitude: "float",
-    nicePlaceToVisit: "boolean",
-  },
-);
+const placeSchema = asSchema({
+  name: "string",
+  latitude: "float",
+  longitude: "float",
+  nicePlaceToVisit: "boolean",
+});
 
 type PlaceExpected = {
   name: string;

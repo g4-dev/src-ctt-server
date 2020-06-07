@@ -6,23 +6,21 @@ BIN_DIR:=bin
 # Argument group for different usages
 ARGS:= -A --importmap=$(IMPORT_MAP) --unstable --config=$(PWD)/tsconfig.json
 
-EXE:=cd $(ENTRY_DIR) && deno run
-DEBUG_EXE:=cd $(ENTRY_DIR) && denon run
+EXE:=cd $(ENTRY_DIR) && deno
+DEBUG_EXE:=cd $(ENTRY_DIR) && denon
 
 # Deployment (need to override these vars in Makefile)
-REMOTE_DIR_DEPLOY?=/var/www
-SSH_ADDRESS?=site.test
-USER_DEPLOY?=root
-SSH_AUTH_KEY?=
-SSH_AUTH_KEY_FILE:=auth_key_rsa
-GIT_URL?=
+SSH_ADDRESS?=
+USER_DEPLOY?=
+
+# Git config
+ORG:=
+REPO:=
+GIT_URL:=https://github.com/$(ORG)/$(REPO).git
+GIT_DIR:=
 
 # Command by ssh
-ssh=echo $(SSH_AUTH_KEY) >> $(SSH_AUTH_KEY_FILE);\
-	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) -i $(SSH_AUTH_KEY) "\
-	cd $(REMOTE_DIR_DEPLOY);\
-	/bin/bash -c '$(1)'"\
-	rm $(SSH_AUTH_KEY_FILE)
+ssh=ssh $(USER_DEPLOY)@$(SSH_ADDRESS) "/bin/bash -c '$(1)'"
 
 .DEFAULT_GOAL := help
 .PRECIOUS: start debug
@@ -36,32 +34,25 @@ help:
 
 # Run server
 start:
-	$(EXE) $(ARGS) $(ENTRY)
+	$(EXE) run $(ARGS) $(ENTRY)
+
+prod:
+	$(EXE) run -M info $(ARGS) $(ENTRY)
 
 full:
-	$(EXE) $(ARGS) $(ENTRY)
+	$(EXE) run $(ARGS) $(ENTRY)
 
 lint:
 	deno fmt $(ENTRY_DIR)
 
 tests:
-	deno test $(ENTRY_DIR)/**tests/**
+	$(EXE) test $(ARGS)
 
 # Start with debugger
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) -L debug $(ARGS) --inspect-brk $(ENTRY)
-
-deploy:
-	ssh $(USER_DEPLOY)@$(SSH_ADDRESS) -i $(SSH_AUTH_KEY) "cd $(REMOTE_DIR_DEPLOY);\
-	/bin/bash -c '\
-	git fetch --all && git reset --hard upstream/master || $(MAKE) init-prod'"
-
-init-prod:
-	@$(call ssh, \
-	git clone $(GIT_URL)\
-	)
+	$(DEBUG_EXE) run -L debug $(ARGS) --inspect-brk $(ENTRY)
 
 clear:
 	rm -rf *.log
