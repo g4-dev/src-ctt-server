@@ -4,7 +4,7 @@ ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
 BIN_DIR:=bin
 # Argument group for different usages
-ARGS:= -A --importmap=$(IMPORT_MAP) --unstable --config=$(PWD)/tsconfig.json
+ARGS:= -A --config=$(PWD)/tsconfig.json
 
 EXE:=cd $(ENTRY_DIR) && deno
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon
@@ -52,7 +52,7 @@ tests:
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) run -L debug $(ARGS) --inspect-brk $(ENTRY)
+	$(DEBUG_EXE) run $(ARGS) --inspect-brk $(ENTRY)
 
 clear:
 	rm -rf *.log

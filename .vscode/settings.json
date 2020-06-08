@@ -1,7 +1,8 @@
 {
   "editor.defaultFormatter": null,
   "editor.formatOnSave": true,
-  "javascript.validate.enable": false,
+  "javascript.validate.enable": true,
+  "javascript.suggestionActions.enabled": false,
   "telemetry.enableCrashReporter": false,
   "telemetry.enableTelemetry": false,
   "path-intellisense.extensionOnImport": true,
@@ -10,19 +11,10 @@
     ".denonrc": "json"
   },
   "deno.enabled": true,
-  "deno.importmap": "../src/import-map.json",
+  "deno.importmap": "./src/import-map.json",
   "deno.autoFmtOnSave": true,
   "deno.unstable": true,
-  "[markdown]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
-  },
   "[yaml]": {
-    "editor.defaultFormatter": "SimonSiefke.prettier-vscode"
+    "editor.defaultFormatter": "vscode.json-language-features"
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "vscode.typescript-language-features"
-  }
 }

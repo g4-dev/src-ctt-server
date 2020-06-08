@@ -13,7 +13,6 @@
         "-A",
         "--config=${workspaceFolder}/tsconfig.json",
         "--unstable",
-        "--importmap=import-map.json",
         "app.ts"
       ],
       "port": 9229

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "experimentalDecorators": true,
-    "strictPropertyInitialization": true,
+    "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "plugins": [
       {

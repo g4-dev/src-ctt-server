@@ -1,6 +1,6 @@
 import { Database } from "../deps.ts";
-import { Transcript } from "../model/index.ts";
-import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, DB_PORT } from "@/env.ts";
+import { Transcript, User } from "../model/index.ts";
+import { DB_HOST, DB_NAME, DB_PASSWORD, DB_USER, DB_PORT } from "../env.ts";
 
 const db = new Database("mysql", {
   host: DB_HOST,
@@ -10,6 +10,6 @@ const db = new Database("mysql", {
   port: Number(DB_PORT) || 3306,
 });
 
-db.link([Transcript]);
+db.link([Transcript, User]);
 
 export { db };

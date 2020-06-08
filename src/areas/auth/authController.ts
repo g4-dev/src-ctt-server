@@ -69,7 +69,7 @@ export class AuthController {
   @Post("/master-key")
   async initMasterKey() {
     if (null !== User.where("isMasterKey", true).first()) {
-      throw new ForbiddenError();
+      return new ForbiddenError();
     }
     // TODO
   }

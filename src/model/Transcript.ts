@@ -3,7 +3,7 @@ import { Model, DataTypes } from "../deps.ts";
 export interface ITranscript {
   name: string;
   content: string;
-  status: string; // TODO use enum to filter possible choices
+  status: string;
 }
 
 export class Transcript extends Model {
@@ -17,6 +17,6 @@ export class Transcript extends Model {
     },
     name: DataTypes.STRING,
     content: DataTypes.STRING,
-    status: DataTypes.STRING, // TODO use ENUM type to filter possible choices
+    status: DataTypes.STRING,
   };
 }

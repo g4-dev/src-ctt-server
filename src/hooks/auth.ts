@@ -14,15 +14,11 @@ export class TokenHook implements HookTarget<unknown, PayloadType> {
         ?.replace(`${JwtConfig.schema} `, "");
 
       // reject request if token was not provide
-      if (!token) {
-        throw new ForbiddenError("error");
-      }
-
-      // check the validity of the token
       if (
+        !token ||
         !(await validateJwt(token, JwtConfig.secretKey, { isThrowing: false }))
       ) {
-        throw new ForbiddenError("error");
+        reject(new ForbiddenError("No token"));
       }
       resolve();
     });

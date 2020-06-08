@@ -3,42 +3,38 @@ import {
   Get,
   Post,
   Body,
-  Req,
-  Res,
-  QueryParam,
+  Param,
   UseHook,
+  BadRequestError,
 } from "../../deps.ts";
 import { Transcript, ITranscript } from "../../model/index.ts";
-import { TokenHook } from "../../hooks/auth.ts";
 
-@UseHook(TokenHook)
+//import { TokenHook } from "../../hooks/auth.ts";
+
+//@UseHook(TokenHook, "123")
 @Controller()
 export class TranscriptController {
   @Get()
-  getAll() {
-    return "List transcript";
+  async getAll() {
+    return { data: await Transcript.all() };
   }
 
   @Post()
-  async add(@Body(Transcript) data: ITranscript) {
-    return {
-      data,
-      errors: data, ///await validate(data),
-    };
+  async add(@Body() data: ITranscript) {
+    return { data: await Transcript.create(data as any) };
   }
 
   @Post("/update/:id")
-  async update(id: string, values: ITranscript) {
-    await Transcript.where("id", id).update(values as any);
-    return this.getOne(id);
+  async update(@Param("id") id: number, @Body() data: ITranscript) {
+    return {
+      data: await Transcript.where("id", id).update(
+        data as any,
+      ),
+    };
   }
 
   @Get("/:id")
-  getOne(
-    @QueryParam("id") id: string,
-    @Req() request: Request | undefined = undefined,
-    @Res() response: Response | undefined = undefined,
-  ) {
-    return { text: id };
+  getOne(@Param("id") id: string) {
+    return { data: Transcript.find(id as any) };
   }
 }
