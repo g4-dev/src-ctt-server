@@ -31,9 +31,8 @@ jobs:
           key: ${{ secrets.SSH_AUTH_KEY }}
           script: |
             cd ${{ env.TARGET }} && git fetch origin master
-            git update-index --refresh
             git reset --hard origin/master
-            echo ${{ secrets.ENV_PROD }} > src/.env && chmod 400 src/.env
+            echo '${{ secrets.ENV_PROD }}' >src/.env && chmod 400 src/.env
 
       - name: refresh website
         run: make refresh-site

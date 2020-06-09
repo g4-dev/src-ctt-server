@@ -3,74 +3,98 @@ import {
   Controller,
   Get,
   Post,
+  Param,
   Body,
   Req,
-  Res,
   Delete,
   QueryParam,
   UseHook,
   bcrypt,
 } from "../../deps.ts";
 import { User, IUser } from "../../model/index.ts";
-import { TokenHook } from "../../hooks/auth.ts";
+import { CatchHook } from "../../hooks/error.ts";
 import { ForbiddenError } from "../../deps.ts";
+import { v4 } from "https://deno.land/std/uuid/mod.ts";
 
-@Controller("/users")
+@UseHook(CatchHook)
+@Controller()
 export class AuthController {
-  @Get("/list")
-  list() {
-    return User.all();
-  }
-  @Post("/create")
-  async create(values: any) {
-    if (
-      !values.masterKey &&
-      values.masterKey == User.where("isMasterKey", true).first()
-    ) {
-      throw ForbiddenError;
+  /**
+   * Create an User from master key or create Master key (UUID)
+   *
+   * @param request {
+   *    headers: { masterKey: string }
+   * }
+   * @param name User name (need name master to create masterKey)
+   *
+   * @returns {IUser}
+   */
+  @Get("/create")
+  async create(
+    @Req() request: Request,
+    @QueryParam("name") name: string,
+  ) {
+    const masterKey = await User.select("token")
+      .where("isMasterKey", true)
+      .first();
+    if (!masterKey && name == "master") {
+      return this.initMasterKey();
     }
-    const token = await User.hashToken(values.token);
 
+    const reqHeadersMasterKey = request.headers.get("master_key");
+    if (
+      !reqHeadersMasterKey &&
+      reqHeadersMasterKey !== masterKey.token
+    ) {
+      throw new ForbiddenError();
+    }
+
+    const userKeyToken = v4.generate();
+    const token = await User.hashToken(userKeyToken);
     const user: IUser = {
-      name: values.name,
+      name: name,
       token,
       isMasterKey: false,
     };
-    await User.create(user as any);
-    return values;
+
+    return {
+      data: await User.create(user as any),
+      user: { ...user, ...{ token: userKeyToken } },
+    };
   }
 
-  @Delete("/delete")
-  async delete(id: string) {
+  @Delete("/delete/:id")
+  async delete(@Param("id") id: number) {
     await User.deleteById(id);
   }
 
-  @Get("/users/:id")
-  getOne(id: string) {
-    return User.where("id", id).first();
+  @Get("/users")
+  list() {
+    return User.all();
   }
 
-  // @Post("/edit")
-  // async update(id: string, values: IUser) {
-  //   await User.where("id", id).update(values as any);
-  //   return this.getOne(id);
-  // }
+  @Get("/users/:id")
+  getOne(@Param("id") id: number) {
+    return User.find(id);
+  }
 
   @Post("/login")
-  async login(name: string, token: string) {
-    const user = await User.where("name", name).first();
-    if (!user || !(await bcrypt.compare(token, user.token))) {
+  async login(@Body() values: IUser) {
+    const user = await User.where("name", values.name).first();
+    if (!user || !(await bcrypt.compare(values.token, user.token))) {
       return false;
     }
 
-    return User.generateJwt(user.id);
+    return { data: User.generateJwt(user.id) };
   }
 
-  @Post("/master-key")
-  async initMasterKey() {
-    if (null !== User.where("isMasterKey", true).first()) {
-      return new ForbiddenError();
-    }
-    // TODO
+  // TODO : if time allow it, secure key with bcrypt
+  protected async initMasterKey() {
+    const master: IUser = {
+      name: "master",
+      isMasterKey: true,
+      token: v4.generate(),
+    };
+    return { data: User.create(master as any), user: master };
   }
 }

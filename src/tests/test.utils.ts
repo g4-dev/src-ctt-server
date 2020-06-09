@@ -4,6 +4,9 @@ let server: Deno.Process;
 
 export async function startServer(serverPath: string): Promise<void> {
   server = Deno.run({
+    env: {
+      DB_TYPE: "sqlite3",
+    },
     cmd: [
       Deno.execPath(),
       "run",

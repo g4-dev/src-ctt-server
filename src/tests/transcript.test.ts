@@ -1,21 +1,26 @@
 import { assertEquals } from "./deps.ts";
 import { startServer, killServer } from "./test.utils.ts";
-import { IP, APP_PORT } from "../env.ts";
+import { IP, PORT } from "../env.ts";
 const { test } = Deno;
 
-const baseUrl = `http://${IP}:${APP_PORT}/`;
+const baseUrl = `http://${IP}:${PORT}/`;
 
 /**
  * Test cases
  */
 test({
-  name: "[http] default server should response 200, 404",
+  name: "[TRANSCRIPTS] Test crud",
   async fn(): Promise<void> {
     await startServer("./app.ts");
 
     try {
-      const r1 = await fetch(baseUrl + "transcripts");
-      assertEquals(r1.status, 404);
+      const all = await fetch(baseUrl + "transcripts");
+      const allTxt = await response.text();
+      const get = await fetch(baseUrl + "transcripts/1");
+      // Suite
+      assertEquals(all.status, 200);
+      assertEquals(allTxt, "Hey! john");
+      assertEquals(get.status, 200);
     } finally {
       killServer();
     }

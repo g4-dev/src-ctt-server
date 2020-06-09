@@ -8,6 +8,7 @@ API=https://api.alwaysdata.com/v1
 TOKEN?=
 SITE_ID?=
 TARGET:=/home/$(USER_DEPLOY)/$(REPO)
+APP_PROD?=
 
 help_more:
 	@echo "[====== src-ctt-server =====]"

@@ -6,7 +6,7 @@ import { JwtConfig } from "../config/jwt.ts";
 export interface IUser {
   name: string;
   token: string;
-  isMasterKey: boolean;
+  isMasterKey?: boolean;
 }
 
 export class User extends Model {
@@ -25,6 +25,7 @@ export class User extends Model {
 
   static defaults = {
     id: nanoid(),
+    isMasterKey: false,
   };
 
   static generateJwt(id: string) {

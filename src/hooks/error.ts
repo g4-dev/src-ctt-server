@@ -5,10 +5,10 @@ type PayloadType = string[];
 @Singleton()
 export class CatchHook implements HookTarget<unknown, PayloadType> {
   onCatchAction(context: Context<unknown>, payload: PayloadType) {
-    console.log("Entered catch hook");
+    console.error("Entered in error");
     const error = context.response.error as HttpError;
 
-    (error as any)["description"] = "This description from catch hook";
+    (error as any)["description"] = error.message || "Error during request";
     context.response.result = Content(error, error.httpCode || 500);
   }
 }

@@ -1,11 +1,7 @@
 import {
   Controller,
-  Get,
-  Body,
-  Req,
-  Res,
-  QueryParam,
   UseHook,
+  Get,
 } from "../../deps.ts";
 
 import { TokenHook } from "../../hooks/auth.ts";
