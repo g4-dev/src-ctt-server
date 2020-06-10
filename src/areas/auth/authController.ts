@@ -10,15 +10,24 @@ import {
   QueryParam,
   UseHook,
   bcrypt,
+  BadRequestError,
 } from "../../deps.ts";
 import { User, IUser } from "../../model/index.ts";
 import { CatchHook } from "../../hooks/error.ts";
 import { ForbiddenError } from "../../deps.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
 
+const SECURE_USER_FIELDS = ["name", "id", "created_at", "updated_at"];
+
 @UseHook(CatchHook)
 @Controller()
 export class AuthController {
+  // Verify if master key object exist
+  protected async masterKey(): Promise<IUser> {
+    return await User.select("token")
+      .where("isMasterKey", true)
+      .first();
+  }
   /**
    * Create an User from master key or create Master key (UUID)
    *
@@ -29,63 +38,76 @@ export class AuthController {
    *
    * @returns {IUser}
    */
-  @Get("/create")
+  @Get("/create-user")
   async create(
     @Req() request: Request,
     @QueryParam("name") name: string,
   ) {
-    const masterKey = await User.select("token")
-      .where("isMasterKey", true)
-      .first();
-    if (!masterKey && name == "master") {
+    const mKey = await this.masterKey();
+    if (!mKey as boolean && name == "master") {
       return this.initMasterKey();
     }
 
     const reqHeadersMasterKey = request.headers.get("master_key");
     if (
       !reqHeadersMasterKey &&
-      reqHeadersMasterKey !== masterKey.token
+      reqHeadersMasterKey !== mKey.token
     ) {
       throw new ForbiddenError();
     }
 
-    const userKeyToken = v4.generate();
-    const token = await User.hashToken(userKeyToken);
-    const user: IUser = {
+    return this.createUser({
       name: name,
-      token,
+      token: "",
       isMasterKey: false,
-    };
-
-    return {
-      data: await User.create(user as any),
-      user: { ...user, ...{ token: userKeyToken } },
-    };
-  }
-
-  @Delete("/delete/:id")
-  async delete(@Param("id") id: number) {
-    await User.deleteById(id);
+    });
   }
 
   @Get("/users")
-  list() {
-    return User.all();
+  async list() {
+    return await User
+      .where("isMasterKey", false)
+      .select(...SECURE_USER_FIELDS).all();
   }
 
   @Get("/users/:id")
   getOne(@Param("id") id: number) {
-    return User.find(id);
+    return User.select(...SECURE_USER_FIELDS).find(id);
+  }
+
+  @Delete("/users/:id")
+  delete(@Param("id") id: number) {
+    return User
+      .where("isMasterKey", false)
+      .deleteById(id);
   }
 
   @Post("/login")
   async login(@Body() values: IUser) {
     const user = await User.where("name", values.name).first();
     if (!user || !(await bcrypt.compare(values.token, user.token))) {
-      return false;
+      throw new BadRequestError("Invalid credentials");
     }
 
     return { data: User.generateJwt(user.id) };
+  }
+
+  @Get("/setup")
+  async setup() {
+    if (!this.masterKey()) {
+      throw new ForbiddenError("Setup already done");
+    }
+
+    return true;
+  }
+
+  private async canManageUser(id: number) {
+    const toDelete = await User.find(id);
+    const mKey = await this.masterKey() as any;
+    console.log(toDelete);
+    console.log(mKey);
+
+    return mKey.id != toDelete.id;
   }
 
   // TODO : if time allow it, secure key with bcrypt
@@ -93,8 +115,22 @@ export class AuthController {
     const master: IUser = {
       name: "master",
       isMasterKey: true,
-      token: v4.generate(),
+      token: "",
     };
-    return { data: User.create(master as any), user: master };
+    return { data: this.createUser(master) };
+  }
+
+  protected async createUser({ name, isMasterKey = false }: IUser) {
+    const userKeyToken = v4.generate();
+    const user: IUser = {
+      name: name,
+      token: await User.hashToken(userKeyToken),
+      isMasterKey: isMasterKey,
+    };
+    console.log(userKeyToken, user);
+    return {
+      data: User.create(user as any),
+      user: { ...user, ...{ token: userKeyToken } },
+    };
   }
 }

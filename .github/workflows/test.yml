@@ -18,10 +18,10 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Tests
-        run: |
-          export PATH=$DENO_INSTALL/bin:$PATH
-          make tests
+      # - name: Tests
+      #   run: |
+      #     export PATH=$DENO_INSTALL/bin:$PATH
+      #     make tests
 
       - name: deno format check
         run: |

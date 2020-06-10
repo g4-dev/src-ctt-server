@@ -10,8 +10,9 @@ import {
 import { Transcript, ITranscript } from "../../model/index.ts";
 
 //import { TokenHook } from "../../hooks/auth.ts";
+//import { CatchHook } from "../../hooks/error.ts";
 
-//@UseHook(TokenHook, "123")
+//@UseHook(TokenHook)
 @Controller()
 export class TranscriptController {
   @Get()
