@@ -2,12 +2,12 @@ FROM hayd/deno:latest
 
 EXPOSE 8000
 
-WORKDIR /app
+WORKDIR .
 
 USER deno
 
-ADD . /app
+ADD . .
 
-RUN deno cache src/app.ts
+RUN cd src
 
-CMD ["make", "start"]
+CMD ["run", "-A", "--unstable", "--config=../tsconfig.json", "app.ts"]
