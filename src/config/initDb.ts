@@ -30,4 +30,6 @@ const db = new Database(
 
 db.link([Transcript, User]);
 
+console.warn(dbMapping);
+
 export { db };

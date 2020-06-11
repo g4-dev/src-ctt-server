@@ -42,41 +42,41 @@ let masterKey = "";
 //   },
 // });
 
-test({
-  name: "[AUTH] Tests User CRULD",
-  async fn(): Promise<void> {
-    await startServer("./app.ts");
+// test({
+//   name: "[AUTH] Tests User CRULD",
+//   async fn(): Promise<void> {
+//     await startServer("./app.ts");
 
-    try {
-      const response = await fetch(baseUrl + "transcripts/1");
-      //const text = await response.text();
+//     try {
+//       const response = await fetch(baseUrl + "transcripts/1");
+//       //const text = await response.text();
 
-      assertEquals(response.status, 404);
-      //assertEquals(text, "Hey! john");
-    } finally {
-      killServer();
-    }
-  },
-});
+//       assertEquals(response.status, 404);
+//       //assertEquals(text, "Hey! john");
+//     } finally {
+//       killServer();
+//     }
+//   },
+// });
 
-/**
- * Test Home with auth
- */
-test({
-  name: "[TRANSCRIPTS] Test Home response",
-  async fn(): Promise<void> {
-    await startServer("./app.ts");
+// /**
+//  * Test Home with auth
+//  */
+// test({
+//   name: "[TRANSCRIPTS] Test Home response",
+//   async fn(): Promise<void> {
+//     await startServer("./app.ts");
 
-    try {
-      const home = await fetch(baseUrl);
-      const homeLogged = await fetch(baseUrl + "/login");
-      // Suite
-      assertEquals(home.status, 403);
-      // need auth
-      assertEquals(homeLogged.status, 200);
-      assertEquals(homeLogged, { message: "Welcome to Call2Text Api" });
-    } finally {
-      killServer();
-    }
-  },
-});
+//     try {
+//       const home = await fetch(baseUrl);
+//       const homeLogged = await fetch(baseUrl + "/login");
+//       // Suite
+//       assertEquals(home.status, 403);
+//       // need auth
+//       assertEquals(homeLogged.status, 200);
+//       assertEquals(homeLogged, { message: "Welcome to Call2Text Api" });
+//     } finally {
+//       killServer();
+//     }
+//   },
+// });

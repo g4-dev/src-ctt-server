@@ -28,4 +28,4 @@ refresh-site:
 
 docker:
 	docker-compose build
-	docker-compose up > /var/log/$(REPO).log
+	docker-compose up
