@@ -36,6 +36,9 @@ help:
 start:
 	$(EXE) run $(ARGS) $(ENTRY)
 
+reload:
+	$(EXE) run --reload $(ARGS) $(ENTRY)
+
 prod:
 	$(EXE) run -M info $(ARGS) $(ENTRY)
 

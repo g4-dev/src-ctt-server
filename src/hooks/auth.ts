@@ -9,16 +9,14 @@ export class TokenHook implements HookTarget<unknown, PayloadType> {
   async onPreAction(context: Context<unknown>, payload: PayloadType) {
     return new Promise(async (resolve, reject) => {
       // Get the token from the request
-      const token = context.request.headers
+      const token: any = context.request.headers
         .get(JwtConfig.header)
         ?.replace(`${JwtConfig.schema} `, "");
 
-      // reject request if token was not provide
-      if (
-        !token ||
-        !(await validateJwt(token, JwtConfig.secretKey, { isThrowing: false }))
-      ) {
-        reject(new ForbiddenError("No token"));
+      console.log(token);
+
+      if (!token && !(await validateJwt(token, JwtConfig.secretKey))) {
+        reject(new ForbiddenError("No token or invalid"));
       }
       resolve();
     });

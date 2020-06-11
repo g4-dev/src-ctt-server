@@ -8,6 +8,8 @@ USER deno
 
 ADD . .
 
-RUN cd src
+WORKDIR ./src/
 
-CMD ["run", "-A", "--unstable", "--config=../tsconfig.json", "app.ts"]
+CMD ["run", "-A", "--config=../tsconfig.json", "--unstable", "bin/schema.ts"]
+
+CMD ["run", "-A", "--unstable", "--reload", "--config=../tsconfig.json", "app.ts"]

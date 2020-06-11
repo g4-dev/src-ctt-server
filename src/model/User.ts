@@ -17,15 +17,19 @@ export class User extends Model {
     id: {
       primaryKey: true,
       autoIncrement: true,
+      allowNull: false,
     },
-    name: DataTypes.STRING,
+    name: {
+      ...DataTypes.string(20),
+      allowNull: true,
+    },
     token: DataTypes.STRING,
-    isMasterKey: DataTypes.BOOLEAN,
+    is_master_key: DataTypes.BOOLEAN,
   };
 
   static defaults = {
     id: nanoid(),
-    isMasterKey: false,
+    is_master_key: false,
   };
 
   static generateJwt(id: string) {
@@ -45,4 +49,6 @@ export class User extends Model {
     const salt = await bcrypt.genSalt(8);
     return bcrypt.hash(token, salt);
   }
+
+  
 }

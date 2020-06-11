@@ -1,0 +1,37 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    env:
+      CI: true
+      TOKEN: ${{ secrets.TOKEN }} # Always data token to deploy website
+      SITE_ID: ${{ secrets.SITE_ID }} # Always data token to deploy website
+      TARGET: /home/${{ secrets.USER_DEPLOY }}/${{ github.event.repository.name }}
+      # Deno vars
+      DENO_INSTALL: "/Users/runner/.local"
+
+    runs-on: ubuntu-16.04
+
+    steps:
+      - uses: actions/checkout@master
+      - uses: denolib/setup-deno@master
+        with:
+          deno-version: v1.x
+
+      - name: Push to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_ADDRESS }}
+          username: ${{ secrets.USER_DEPLOY }}
+          key: ${{ secrets.SSH_AUTH_KEY }}
+          script: |
+            cd ${{ env.TARGET }} && git fetch origin master
+            git reset --hard origin/master
+            echo '${{ secrets.ENV_PROD }}' >src/.env && chmod 400 src/.env
+            docker-compose build
+            docker-compose up > /var/log/${{ github.event.repository.name }}.log

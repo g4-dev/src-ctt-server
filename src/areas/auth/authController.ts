@@ -38,23 +38,21 @@ export class AuthController {
    *
    * @returns {IUser}
    */
-  @Get("/create-user")
+  @Get("/users/create")
   async create(
     @Req() request: Request,
     @QueryParam("name") name: string,
   ) {
-    const mKey = await this.masterKey();
-    if (!mKey as boolean && name == "master") {
-      return this.initMasterKey();
+    const masterKey = await this.masterKey();
+    if (!masterKey as boolean && name == "master") {
+      return this.createUser({
+        name: "master",
+        isMasterKey: true,
+        token: "",
+      });
     }
 
-    const reqHeadersMasterKey = request.headers.get("master_key");
-    if (
-      !reqHeadersMasterKey &&
-      reqHeadersMasterKey !== mKey.token
-    ) {
-      throw new ForbiddenError();
-    }
+    this.canManage(request.headers, masterKey);
 
     return this.createUser({
       name: name,
@@ -65,9 +63,11 @@ export class AuthController {
 
   @Get("/users")
   async list() {
-    return await User
-      .where("isMasterKey", false)
-      .select(...SECURE_USER_FIELDS).all();
+    return {
+      data: await User
+        .where("isMasterKey", false)
+        .select(...SECURE_USER_FIELDS).all(),
+    };
   }
 
   @Get("/users/:id")
@@ -76,10 +76,15 @@ export class AuthController {
   }
 
   @Delete("/users/:id")
-  delete(@Param("id") id: number) {
-    return User
+  async delete(@Req() request: Request, @Param("id") id: number) {
+    this.canManage(request.headers);
+    await User
       .where("isMasterKey", false)
       .deleteById(id);
+
+    return {
+      data: "deleted:" + id,
+    };
   }
 
   @Post("/login")
@@ -101,23 +106,18 @@ export class AuthController {
     return true;
   }
 
-  private async canManageUser(id: number) {
-    const toDelete = await User.find(id);
-    const mKey = await this.masterKey() as any;
-    console.log(toDelete);
-    console.log(mKey);
-
-    return mKey.id != toDelete.id;
-  }
-
-  // TODO : if time allow it, secure key with bcrypt
-  protected async initMasterKey() {
-    const master: IUser = {
-      name: "master",
-      isMasterKey: true,
-      token: "",
-    };
-    return { data: this.createUser(master) };
+  protected canManage(
+    headers: Headers,
+    masterKeyPayload: IUser | undefined = undefined,
+  ) {
+    const reqHeadersMasterKey = headers.get("master_key");
+    let masterKey: any = masterKeyPayload ?? this.masterKey();
+    if (
+      !reqHeadersMasterKey &&
+      reqHeadersMasterKey !== masterKey.token
+    ) {
+      throw new ForbiddenError();
+    }
   }
 
   protected async createUser({ name, isMasterKey = false }: IUser) {
@@ -127,9 +127,13 @@ export class AuthController {
       token: await User.hashToken(userKeyToken),
       isMasterKey: isMasterKey,
     };
-    console.log(userKeyToken, user);
+
+    if (await User.where("name", name).first()) {
+      throw new ForbiddenError("name already exist");
+    }
+
     return {
-      data: User.create(user as any),
+      data: await User.create(user as any),
       user: { ...user, ...{ token: userKeyToken } },
     };
   }
