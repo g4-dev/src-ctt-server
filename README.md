@@ -113,6 +113,17 @@ Base de donnée mysql 8 à installer en local
 
 1. Pour lancer une base de donnée en local
 
+- Pour les utilisateurs de grille pain ou SQL est une vrai galère :
+> Dans git bash please
+
+```ts
+	DB_USER=205392_\
+	DB_PASSWORD=E8X!t4%vH4*23X*r\
+	DB_NAME=pandemik699_ctt\
+	DB_HOST=mysql-pandemik699.alwaysdata.net \
+	cd src && deno run -A --unstable --config=tsconfig.json app.ts
+```
+
 - Installer mysql 8 Server
   [Procédure](https://dev.mysql.com/doc/mysql/en/windows-installation.html)
 

@@ -4,8 +4,9 @@ ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
 BIN_DIR:=bin
 TEST_DIR:=$(ENTRY_DIR)/tests
+TS_CONFIG:=tsconfig.json
 # Argument group for different usages
-ARGS:= -A --config=$(PWD)/tsconfig.json --unstable
+ARGS:= -A --config=$(TS_CONFIG) --unstable
 
 EXE:=cd $(ENTRY_DIR) && deno
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon

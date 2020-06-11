@@ -41,7 +41,6 @@ export class User extends Model {
       alg: JwtConfig.alg as Jose["alg"],
       typ: JwtConfig.type,
     };
-    console.log(JwtConfig);
     return makeJwt({ header, payload, key: JwtConfig.secretKey });
   }
 
