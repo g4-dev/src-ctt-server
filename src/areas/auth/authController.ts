@@ -133,8 +133,10 @@ export class AuthController {
     }
 
     return {
-      data: await User.create(user as any),
-      user: { ...user, ...{ token: userKeyToken } },
+      user: {
+        ...(await User.create(user as any))[0],
+        ...{ token: userKeyToken },
+      },
     };
   }
 }

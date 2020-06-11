@@ -1,6 +1,8 @@
 import { assertEquals } from "./deps.ts";
 import { startServer, killServer } from "./test.utils.ts";
 import { IP, PORT } from "../env.ts";
+import { soxa } from "./test.utils.ts";
+
 const { test } = Deno;
 
 const baseUrl = `http://${IP}:${PORT}/`;
@@ -15,7 +17,7 @@ test({
 
     try {
       const all = await fetch(baseUrl + "transcripts");
-      const allTxt = await response.text();
+      const allTxt = await all.text();
       const get = await fetch(baseUrl + "transcripts/1");
       // Suite
       assertEquals(all.status, 200);

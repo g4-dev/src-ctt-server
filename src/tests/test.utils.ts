@@ -1,4 +1,5 @@
 import { assert, TextProtoReader, BufReader } from "./deps.ts";
+export { soxa } from "https://deno.land/x/soxa/mod.ts";
 
 let server: Deno.Process;
 

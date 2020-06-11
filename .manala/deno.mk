@@ -3,6 +3,7 @@ ENTRY_DIR:=src
 ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
 BIN_DIR:=bin
+TEST_DIR:=$(ENTRY_DIR)/tests
 # Argument group for different usages
 ARGS:= -A --config=$(PWD)/tsconfig.json --unstable
 
@@ -49,7 +50,12 @@ lint:
 	deno fmt $(ENTRY_DIR)
 
 tests:
+	touch $(TEST_DIR)/database.sqlite
 	$(EXE) test $(ARGS)
+
+tests-debug:
+	touch $(TEST_DIR)/database.sqlite
+	$(EXE) test -L info --failfast $(ARGS)
 
 # Start with debugger
 debug:
