@@ -6,6 +6,7 @@ jobs:
   build:
     env:
       DENO_INSTALL: "/Users/runner/.local"
+      PATH: $DENO_INSTALL/bin:$PATH
     name: Ctt-server in ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -18,14 +19,12 @@ jobs:
         with:
           deno-version: v1.x
 
-      # - name: Tests
-      #   run: |
-      #     export PATH=$DENO_INSTALL/bin:$PATH
-      #     make tests
+      - name: Tests
+        run: |
+          make tests
 
       - name: deno format check
         run: |
-          export PATH=$DENO_INSTALL/bin:$PATH
           deno fmt --check
 
 # TODO : e2e tests

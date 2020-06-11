@@ -17,30 +17,30 @@ let masterKey = "";
 /**
  * Test cases
  */
-// test({
-//   name: "[AUTH] Test master Key",
-//   async fn(): Promise<void> {
-//     await startServer("./app.ts");
+test({
+  name: "[AUTH] Test master Key",
+  async fn(): Promise<void> {
+    await startServer("./app.ts");
 
-//     try {
-//       const masterKeyRequest = await fetch(
-//         baseUrl + "users/create?name=master",
-//         // {
-//         //   headers: { master_key: masterKey },
-//         // },
-//       );
-//       console.info(masterKeyRequest);
-//       assertEquals(masterKeyRequest.status, 200);
-//       //masterKey = masterKey.t
+    try {
+      const masterKeyRequest = await fetch(
+        baseUrl + "users/create?name=master",
+        // {
+        //   headers: { master_key: masterKey },
+        // },
+      );
+      console.info(masterKeyRequest);
+      assertEquals(masterKeyRequest.status, 200);
+      //masterKey = masterKey.t
 
-//       // Suite
-//       //   assertEquals(allTxt, "");
-//       //   assertEquals(get.status, 200);
-//     } finally {
-//       killServer();
-//     }
-//   },
-// });
+      // Suite
+      //   assertEquals(allTxt, "");
+      //   assertEquals(get.status, 200);
+    } finally {
+      killServer();
+    }
+  },
+});
 
 // test({
 //   name: "[AUTH] Tests User CRULD",

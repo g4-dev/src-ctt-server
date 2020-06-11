@@ -5,7 +5,6 @@ import {
   Body,
   Param,
   UseHook,
-  BadRequestError,
   NotFoundError,
 } from "../../deps.ts";
 import { Transcript, ITranscript } from "../../model/index.ts";
