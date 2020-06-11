@@ -55,7 +55,8 @@ tests:
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) run $(ARGS) --inspect-brk $(ENTRY)
+	$(DEBUG_EXE) run $(ARGS)  $(ENTRY)
+	# --inspect-brk # TODO check update --inspect-brk
 
 clear:
 	rm -rf *.log

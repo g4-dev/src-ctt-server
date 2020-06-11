@@ -83,18 +83,18 @@ export class AuthController {
       .deleteById(id);
 
     return {
-      data: "deleted:" + id,
+      data: "deleted: " + id,
     };
   }
 
   @Post("/login")
   async login(@Body() values: IUser) {
     const user = await User.where("name", values.name).first();
-    if (!user || !(await bcrypt.compare(values.token, user.token))) {
+    if (!user && !(await bcrypt.compare(values.token, user.token))) {
       throw new BadRequestError("Invalid credentials");
     }
 
-    return { data: User.generateJwt(user.id) };
+    return { token: User.generateJwt(user.id) };
   }
 
   @Get("/setup")

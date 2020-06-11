@@ -13,10 +13,10 @@ export class TokenHook implements HookTarget<unknown, PayloadType> {
         .get(JwtConfig.header)
         ?.replace(`${JwtConfig.schema} `, "");
 
-      console.log(token);
-
-      if (!token && !(await validateJwt(token, JwtConfig.secretKey))) {
-        reject(new ForbiddenError("No token or invalid"));
+      const jwt: any = await validateJwt(token, JwtConfig.secretKey);
+      console.log(jwt);
+      if (!token || !jwt.isValid) {
+        reject(new ForbiddenError("Token error " + jwt.error.message || ""));
       }
       resolve();
     });
