@@ -8,7 +8,9 @@ USER deno
 
 ADD . .
 
-WORKDIR ./src/
+WORKDIR ./src
+
+RUN ls -la
 
 CMD ["run", "-A", "--config=../tsconfig.json", "--unstable", "bin/schema.ts"]
 

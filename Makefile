@@ -25,3 +25,7 @@ ws:
 
 refresh-site:
 	curl --basic --request POST --user $(TOKEN): $(API)/site/$(SITE_ID)/restart/
+
+docker:
+	docker-compose build
+	docker-compose up > /var/log/$(REPO).log

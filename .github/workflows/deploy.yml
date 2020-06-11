@@ -33,5 +33,4 @@ jobs:
             cd ${{ env.TARGET }} && git fetch origin master
             git reset --hard origin/master
             echo '${{ secrets.ENV_PROD }}' >src/.env && chmod 400 src/.env
-            docker-compose build
-            docker-compose up > /var/log/${{ github.event.repository.name }}.log
+            sudo make docker
