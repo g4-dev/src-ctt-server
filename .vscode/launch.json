@@ -11,7 +11,7 @@
         "run",
         "--inspect-brk",
         "-A",
-        "--config=${workspaceFolder}/tsconfig.json",
+        "--config=tsconfig.json",
         "--unstable",
         "app.ts"
       ],

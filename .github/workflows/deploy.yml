@@ -10,7 +10,6 @@ jobs:
     env:
       CI: true
       TOKEN: ${{ secrets.TOKEN }} # Always data token to deploy website
-      SITE_ID: ${{ secrets.SITE_ID }} # Always data token to deploy website
       TARGET: /home/${{ secrets.USER_DEPLOY }}/${{ github.event.repository.name }}
       # Deno vars
       DENO_INSTALL: "/Users/runner/.local"
@@ -33,4 +32,4 @@ jobs:
             cd ${{ env.TARGET }} && git fetch origin master
             git reset --hard origin/master
             echo '${{ secrets.ENV_PROD }}' >src/.env && chmod 400 src/.env
-            sudo make docker
+            sudo make docker-d

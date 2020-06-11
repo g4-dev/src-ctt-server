@@ -4,9 +4,13 @@ ENV DENO_INSTALL="/home/deno/.deno"
 
 EXPOSE 8081
 
-USER deno
-
 WORKDIR /app
+
+USER root
+
+RUN chown -R deno:deno /app
+
+USER deno
 
 COPY ./src .
 

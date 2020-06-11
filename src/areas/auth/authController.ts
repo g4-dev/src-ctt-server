@@ -90,7 +90,7 @@ export class AuthController {
   @Post("/login")
   async login(@Body() values: IUser) {
     const user = await User.where("name", values.name).first();
-    if (!user && !(await bcrypt.compare(values.token, user.token))) {
+    if (!user || !(await bcrypt.compare(values.token, user.token))) {
       throw new BadRequestError("Invalid credentials");
     }
 
@@ -131,12 +131,9 @@ export class AuthController {
     if (await User.where("name", name).first()) {
       throw new ForbiddenError("name already exist");
     }
-
     return {
-      user: {
-        ...(await User.create(user as any))[0],
-        ...{ token: userKeyToken },
-      },
+      data: await User.create(user as any),
+      token: { ...user, ...{ token: userKeyToken } },
     };
   }
 }

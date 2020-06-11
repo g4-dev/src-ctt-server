@@ -23,7 +23,7 @@ export class Transcript extends Model {
     },
     content: {
       type: DataTypes.TEXT,
-      allowNull: false,
+      allowNull: true,
     },
     status: {
       ...DataTypes.enum(STATUSES),

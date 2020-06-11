@@ -5,6 +5,7 @@ IMPORT_MAP:=import-map.json
 BIN_DIR:=bin
 TEST_DIR:=$(ENTRY_DIR)/tests
 TS_CONFIG:=tsconfig.json
+DENO_VERSION:=1.0.2
 # Argument group for different usages
 ARGS:= -A --config=$(TS_CONFIG) --unstable
 
@@ -64,6 +65,11 @@ debug:
 	@echo 'Open chrome://inspect/#devices'
 	$(DEBUG_EXE) run $(ARGS)  $(ENTRY)
 	# --inspect-brk # TODO check update --inspect-brk
+
+install:
+	curl -fsSL https://deno.land/x/install/install.sh | sh -s v$(DENO_VERSION)
+	deno install --allow-read --allow-run --allow-write -f --unstable https://deno.land/x/denon/denon.ts
+	yarn add global -D typescript-deno-plugin typescript
 
 clear:
 	rm -rf *.log

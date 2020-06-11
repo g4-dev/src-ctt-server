@@ -29,3 +29,7 @@ refresh-site:
 docker:
 	docker-compose build
 	docker-compose up
+
+docker-d:
+	docker-compose build
+	docker-compose up -d
