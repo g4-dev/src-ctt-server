@@ -13,7 +13,6 @@ export class Log implements MiddlewareTarget<unknown> {
 
   onPostRequest(context: Context<unknown>) {
     return new Promise((resolve, reject) => {
-      console.log(context.response.headers);
       console.log(new Date().getTime() - this.date.getTime());
       resolve();
     });

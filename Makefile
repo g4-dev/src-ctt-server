@@ -26,10 +26,31 @@ ws:
 refresh-site:
 	curl --basic --request POST --user $(TOKEN): $(API)/site/$(SITE_ID)/restart/
 
-docker:
+docker-compose:
 	docker-compose build
 	docker-compose up
 
-docker-d:
+docker-compose-d:
 	docker-compose build
 	docker-compose up -d
+
+docker:
+	ID=$$( \
+		docker build \
+			--quiet \
+			-t=ctt/server:latest\
+			.\
+	) \
+	&& docker run -p 80:8081 \
+		--rm \
+		-it \
+		--hostname ctt-server.loicroux.test \
+		-d ctt/server:latest \
+		$${ID}
+
+enter-docker:
+	 docker run -p 80:8081 \
+		-it \
+		--entrypoint '/bin/bash'\
+		ctt/server:latest \
+		/bin/bash

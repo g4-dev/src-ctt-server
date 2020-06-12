@@ -1,1 +1,153 @@
-{"openapi":"3.0.0","info":{"title":"Call2Text Api","version":"0.0.1","description":"OpenApi generated doc API on (127.0.0.1:8081)"},"paths":{"/users/list":{"get":{"tags":[""],"responses":{"200":{"description":""}},"parameters":[]}},"/users/create":{"post":{"tags":[""],"responses":{"200":{"description":""}},"parameters":[]}},"/users/delete":{"delete":{"tags":[""],"responses":{"200":{"description":""}},"parameters":[]}},"/users/users/{id}":{"get":{"tags":[""],"responses":{"200":{"description":""}},"parameters":[]}},"/users/login":{"post":{"tags":[""],"responses":{"200":{"description":""}},"parameters":[]}},"/users/master-key":{"post":{"tags":[""],"responses":{"200":{"description":""}},"parameters":[]}},"/transcripts":{"post":{"tags":["/transcripts"],"responses":{"200":{"description":""}},"parameters":[]}},"/transcripts/update/{id}":{"post":{"tags":["/transcripts"],"responses":{"200":{"description":""}},"parameters":[]}},"/transcripts/{id}":{"get":{"tags":["/transcripts"],"responses":{"200":{"description":""}},"parameters":[{"name":"id","in":"query","schema":{"type":"string"}}]}}},"components":{"schemas":{},"responses":{},"parameters":{},"examples":{},"requestBodies":{},"headers":{},"securitySchemes":{},"links":{},"callbacks":{}},"tags":[],"servers":[{"url":"127.0.0.1","description":"Call2Text Api"}]}
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Call2Text Api",
+        "version": "0.0.1",
+        "description": "OpenApi generated doc API on (127.0.0.1:8081)"
+    },
+    "paths": {
+        "/users/list": {
+            "get": {
+                "tags": [
+                    ""
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/users/create": {
+            "post": {
+                "tags": [
+                    ""
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/users/delete": {
+            "delete": {
+                "tags": [
+                    ""
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/users/users/{id}": {
+            "get": {
+                "tags": [
+                    ""
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/users/login": {
+            "post": {
+                "tags": [
+                    ""
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/users/master-key": {
+            "post": {
+                "tags": [
+                    ""
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/transcripts": {
+            "post": {
+                "tags": [
+                    "/transcripts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/transcripts/update/{id}": {
+            "post": {
+                "tags": [
+                    "/transcripts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": []
+            }
+        },
+        "/transcripts/{id}": {
+            "get": {
+                "tags": [
+                    "/transcripts"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {},
+        "responses": {},
+        "parameters": {},
+        "examples": {},
+        "requestBodies": {},
+        "headers": {},
+        "securitySchemes": {},
+        "links": {},
+        "callbacks": {}
+    },
+    "tags": [],
+    "servers": [
+        {
+            "url": "127.0.0.1",
+            "description": "Call2Text Api"
+        }
+    ]
+}

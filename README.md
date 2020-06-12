@@ -117,11 +117,11 @@ Base de donnée mysql 8 à installer en local
 > Dans git bash please
 
 ```ts
-	DB_USER=205392_\
-	DB_PASSWORD=E8X!t4%vH4*23X*r\
-	DB_NAME=pandemik699_ctt\
-	DB_HOST=mysql-pandemik699.alwaysdata.net \
-	cd src && deno run -A --unstable --config=tsconfig.json app.ts
+cd src/; env DB_USER="205392_" \
+	DB_PASSWORD="E8X!t4%vH4*23X*r" \
+	DB_NAME="pandemik699_ctt" \
+	DB_HOST="mysql-pandemik699.alwaysdata.net" \
+	deno run -A --unstable --config=tsconfig.json app.ts
 ```
 
 - Installer mysql 8 Server

@@ -1,3 +1,4 @@
+SHELL:=/bin/bash
 # Deno config
 ENTRY_DIR:=src
 ENTRY:=app.ts

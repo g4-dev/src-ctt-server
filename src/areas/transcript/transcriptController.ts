@@ -1,15 +1,28 @@
 import {
   Controller,
   Get,
+  Patch,
   Post,
   Body,
   Param,
   UseHook,
   NotFoundError,
+  Context,
 } from "../../deps.ts";
 import { Transcript, ITranscript } from "../../model/index.ts";
 import { TokenHook } from "../../hooks/auth.ts";
 import { CatchHook } from "../../hooks/error.ts";
+import { UploadHook, PayloadType } from "../../modules/upload/hook.ts";
+
+const transcriptUploadOptions: PayloadType = {
+  path: "",
+  extensions: ["jpg", "png"],
+  maxSizeBytes: 10000000,
+  maxFileSizeBytes: -1,
+  saveFile: true,
+  readFile: false,
+  useCurrentDir: true,
+};
 
 @UseHook(TokenHook)
 @UseHook(CatchHook)
@@ -17,7 +30,7 @@ import { CatchHook } from "../../hooks/error.ts";
 export class TranscriptController {
   @Get()
   async getAll() {
-    return { data: await Transcript.all() };
+    return await Transcript.all();
   }
 
   @Post()
@@ -25,17 +38,9 @@ export class TranscriptController {
     return { data: await Transcript.create(data as any), transcript: data };
   }
 
-  @Post("/update/:id")
+  @Patch("/update/:id")
   async update(@Param("id") id: number, @Body() data: ITranscript) {
-    if (!(await Transcript.find(id as any))) {
-      throw new NotFoundError();
-    }
-    console.log(id);
-    return {
-      data: await Transcript.where("id", id).update(
-        data as any,
-      ),
-    };
+    return await Transcript.where("id", id).update(data as any);
   }
 
   @Get("/:id")
@@ -44,6 +49,12 @@ export class TranscriptController {
     if (!transcript) {
       throw new NotFoundError();
     }
-    return { data: transcript };
+    return transcript;
+  }
+
+  @UseHook(UploadHook, transcriptUploadOptions)
+  @Post("/save-audio")
+  async saveAudio(context: any) {
+    return context.uploadedFiles;
   }
 }

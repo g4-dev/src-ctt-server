@@ -5,9 +5,22 @@ services:
     image: "deno-docker:0.0.1"
     build: .
     ports:
-      - "8081:8000"
+      - "81:8081"
+      - "82:8082"
     networks:
-      - deno
+      lcom:
+          aliases:
+            - ctt-server.loicroux.com
+    labels:
+            - "traefik.enable=true"
+            - "traefik.backend=ctt_server"
+            - "traefik.frontend.rule=Host:ctt-server.loicroux.com"
+            - "traefik.port=80"
+            - "traefik.backend.loadbalancer.method=wrr"
+            - "traefik.backend.loadbalancer.sticky=false"
+            - "traefik.protocol=http"
+            - "traefik.weight=10"
 
 networks:
-  deno: {}
+    lcom:
+        external: true
