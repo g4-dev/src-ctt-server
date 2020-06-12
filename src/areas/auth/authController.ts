@@ -6,18 +6,21 @@ import {
   Param,
   Body,
   Req,
+  Res,
   Delete,
   QueryParam,
   UseHook,
   bcrypt,
   BadRequestError,
+  setCookie,
 } from "../../deps.ts";
 import { User, IUser } from "../../model/index.ts";
 import { CatchHook } from "../../hooks/error.ts";
 import { ForbiddenError } from "../../deps.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
+import { JWT_TTL } from "../../env.ts";
 
-const SECURE_USER_FIELDS = ["name", "id", "created_at", "updated_at"];
+const SECURE_USER_FIELDS = ["name", "created_at", "updated_at"];
 
 @UseHook(CatchHook)
 @Controller()
@@ -63,11 +66,9 @@ export class AuthController {
 
   @Get("/users")
   async list() {
-    return {
-      data: await User
-        .where("isMasterKey", false)
-        .select(...SECURE_USER_FIELDS).all(),
-    };
+    return await User
+      .where("isMasterKey", false)
+      .select(...SECURE_USER_FIELDS).all();
   }
 
   @Get("/users/:id")
@@ -88,13 +89,24 @@ export class AuthController {
   }
 
   @Post("/login")
-  async login(@Body() values: IUser) {
+  async login(@Res() response: any, @Body() values: IUser) {
     const user = await User.where("name", values.name).first();
     if (!user || !(await bcrypt.compare(values.token, user.token))) {
       throw new BadRequestError("Invalid credentials");
     }
+    const token = User.generateJwt(user.id);
+    setCookie(
+      response,
+      {
+        name: "token",
+        value: token,
+        httpOnly: true,
+        secure: true,
+        maxAge: Number(JWT_TTL),
+      },
+    );
 
-    return { token: User.generateJwt(user.id) };
+    return { token: token, expiration: Number(JWT_TTL) };
   }
 
   @Get("/setup")

@@ -21,7 +21,7 @@ export class Cors implements MiddlewareTarget<unknown> {
       if (this.allowAnyOrigin) {
         this.headers.set(
           "Access-Control-Allow-Origin",
-          context.request.headers.get("Origin") || "*",
+          context.request.headers.get("Origin") || "",
         );
       }
       if (this.allowAnyMethod) {
@@ -55,6 +55,10 @@ export class Cors implements MiddlewareTarget<unknown> {
         context.response.status = 200;
         context.response.setImmediately();
       }
+
+      this.headers.forEach((el, key) => {
+        context.response.headers.set(key, el);
+      });
 
       resolve();
     });

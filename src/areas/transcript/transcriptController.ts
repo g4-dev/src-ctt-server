@@ -17,7 +17,7 @@ import { CatchHook } from "../../hooks/error.ts";
 export class TranscriptController {
   @Get()
   async getAll() {
-    return { data: await Transcript.all() };
+    return await Transcript.all();
   }
 
   @Post()
@@ -30,7 +30,7 @@ export class TranscriptController {
     if (!(await Transcript.find(id as any))) {
       throw new NotFoundError();
     }
-    console.log(id);
+
     return {
       data: await Transcript.where("id", id).update(
         data as any,
@@ -44,6 +44,6 @@ export class TranscriptController {
     if (!transcript) {
       throw new NotFoundError();
     }
-    return { data: transcript };
+    return transcript;
   }
 }

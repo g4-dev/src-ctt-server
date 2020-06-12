@@ -14,7 +14,6 @@ export class TokenHook implements HookTarget<unknown, PayloadType> {
         ?.replace(`${JwtConfig.schema} `, "");
 
       const jwt: any = await validateJwt(token, JwtConfig.secretKey);
-      console.log(jwt);
       if (!token || !jwt.isValid) {
         reject(new ForbiddenError("Token error " + jwt.error.message || ""));
       }

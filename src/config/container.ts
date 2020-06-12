@@ -6,9 +6,6 @@ import { HomeArea } from "../areas/home/homeArea.ts";
 
 export const container: AppSettings = {
   areas: [AuthArea, TranscriptArea, HomeArea],
-  middlewares: [
-    Log,
-    Cors,
-  ],
+  middlewares: [Log, Cors],
   logging: false,
 };
