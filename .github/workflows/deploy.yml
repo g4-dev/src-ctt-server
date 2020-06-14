@@ -7,16 +7,15 @@ on:
 
 jobs:
   build:
+    runs-on: ubuntu-16.04
     env:
       CI: true
       TARGET: /home/${{ secrets.USER_DEPLOY }}/${{ github.event.repository.name }}
       # Deno vars
       DENO_INSTALL: "/Users/runner/.local"
 
-    runs-on: ubuntu-16.04
-
     steps:
-      - uses: actions/checkout@master
+      - uses: actions/checkout@v2
       - uses: denolib/setup-deno@master
         with:
           deno-version: v1.x
@@ -28,7 +27,7 @@ jobs:
           username: ${{ secrets.USER_DEPLOY }}
           key: ${{ secrets.SSH_AUTH_KEY }}
           script: |
-            cd ${{ env.TARGET }} && git fetch origin master
-            git reset --hard origin/master
+            cd ${{ env.TARGET }} && git fetch origin ${{ github.ref }}
+            git reset --hard origin/${{ github.ref }}
             echo '${{ secrets.ENV_PROD }}' >src/.env && chmod 400 src/.env
-            sudo make docker-compose-d
+            sudo make docker-compose-d BRANCH=${{ github.ref }}

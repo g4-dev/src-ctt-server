@@ -52,13 +52,15 @@ full:
 lint:
 	deno fmt $(ENTRY_DIR)
 
-tests:
+test-deco:
+	rm -rf $(TEST_DIR)/database.sqlite
 	touch $(TEST_DIR)/database.sqlite
+
+tests: test-deco
 	$(EXE) test $(ARGS)
 
-tests-debug:
-	touch $(TEST_DIR)/database.sqlite
-	$(EXE) test -L info --failfast $(ARGS)
+tests-debug: test-deco
+	$(EXE) test --failfast $(ARGS)
 
 # Start with debugger
 debug:

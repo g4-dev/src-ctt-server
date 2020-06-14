@@ -1,12 +1,14 @@
 import { assertEquals } from "./deps.ts";
-import { startServer, killServer } from "./test.utils.ts";
+import { startServer, killServer, itLog, logger } from "./test.utils.ts";
 import { IP, PORT } from "../env.ts";
 import { IUser } from "../model/index.ts";
 import { soxa } from "./test.utils.ts";
 
 const { test } = Deno;
 
-const baseUrl = `http://${IP}:${PORT}/`;
+soxa.defaults.baseURL = `http://${IP}:${PORT}`;
+//soxa.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+
 const testUser: IUser = {
   name: "test",
   token: "",
@@ -14,22 +16,36 @@ const testUser: IUser = {
 };
 let masterKey = "";
 
+// test({
+//   name: "[AUTH] Test protected route",
+//   async fn(): Promise<void> {
+//     await startServer("./app.ts");
+
+//     try {
+//       const home = await soxa.get("/");
+//       logger(home);
+//       assertEquals(home.status, 403);
+//     } finally {
+//       killServer();
+//     }
+//   },
+// });
+
 /**
  * Test cases
  */
 test({
-  name: "[AUTH] Test master Key",
+  name: "[AUTH] Test master Key followed by user CRULD",
   async fn(): Promise<void> {
     await startServer("./app.ts");
 
     try {
-      const masterKeyRequest = await fetch(
-        baseUrl + "users/create?name=master",
-        // {
-        //   headers: { master_key: masterKey },
-        // },
-      );
-      console.info(masterKeyRequest);
+      const home = await soxa.get("/");
+      assertEquals(home.status, 403);
+      const masterKeyRequest = await soxa.get("/users/create?name=master", {
+        headers: { master_key: masterKey },
+      });
+
       assertEquals(masterKeyRequest.status, 200);
       //masterKey = masterKey.t
 
