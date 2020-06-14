@@ -1,11 +1,14 @@
 export {
   assert,
   assertEquals,
-  assertStrictEq,
   assertThrows,
   assertThrowsAsync,
-} from "https://deno.land/std@0.55.0/testing/asserts.ts";
+} from "https://deno.land/std@0.57.0/testing/asserts.ts";
 
-export { TextProtoReader } from "https://deno.land/std@0.55.0/textproto/mod.ts";
+export { delay } from "https://deno.land/std/async/delay.ts";
 
-export { BufReader } from "https://deno.land/std@0.55.0/io/bufio.ts";
+export { TextProtoReader } from "https://deno.land/std@0.57.0/textproto/mod.ts";
+
+export { BufReader } from "https://deno.land/std@0.57.0/io/bufio.ts";
+
+export { soxa } from "https://deno.land/x/soxa/mod.ts";

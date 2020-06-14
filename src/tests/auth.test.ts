@@ -1,8 +1,8 @@
 import { assertEquals } from "./deps.ts";
-import { startServer, killServer, itLog, logger } from "./test.utils.ts";
+import { startServer, killServer, itLog } from "./test.utils.ts";
 import { IP, PORT } from "../env.ts";
 import { IUser } from "../model/index.ts";
-import { soxa } from "./test.utils.ts";
+import { soxa } from "./deps.ts";
 
 const { test } = Deno;
 
@@ -37,21 +37,21 @@ let masterKey = "";
 test({
   name: "[AUTH] Test master Key followed by user CRULD",
   async fn(): Promise<void> {
-    await startServer("./app.ts");
+    await startServer();
 
     try {
+      itLog("/ : home auth protected route");
+
       const home = await soxa.get("/");
       assertEquals(home.status, 403);
       const masterKeyRequest = await soxa.get("/users/create?name=master", {
         headers: { master_key: masterKey },
       });
 
-      assertEquals(masterKeyRequest.status, 200);
-      //masterKey = masterKey.t
+      itLog("/users/create : create master key");
 
-      // Suite
-      //   assertEquals(allTxt, "");
-      //   assertEquals(get.status, 200);
+      assertEquals(masterKeyRequest.status, 200);
+      masterKey = masterKeyRequest.user.data;
     } finally {
       killServer();
     }
@@ -96,3 +96,5 @@ test({
 //     }
 //   },
 // });
+
+export { masterKey, soxa };

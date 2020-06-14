@@ -12,7 +12,11 @@ import {
 import { Transcript, ITranscript } from "../../model/index.ts";
 import { TokenHook } from "../../hooks/auth.ts";
 import { CatchHook } from "../../hooks/error.ts";
-import { UploadHook, PayloadType } from "../../modules/upload/hook.ts";
+import {
+  UploadHook,
+  PayloadType,
+  UploadContext,
+} from "../../modules/upload/hook.ts";
 import { ws } from "../../modules/ws/server.ts";
 
 const transcriptUploadOptions: PayloadType = {
@@ -41,7 +45,7 @@ export class TranscriptController {
 
   @Patch("/update/:id")
   async update(@Param("id") id: number, @Body() data: ITranscript) {
-    return await Transcript.where("id", id).update(data as any);
+    return await Transcript.where({ id: id }).update(data as any);
   }
 
   @Get("/:id")
@@ -55,7 +59,8 @@ export class TranscriptController {
 
   @UseHook(UploadHook, transcriptUploadOptions)
   @Post("/save-audio")
-  async saveAudio(context: any) {
+  async saveAudio(context: UploadContext<unknown>) {
+    console.log(context.uploadedFiles);
     return context.uploadedFiles;
   }
 

@@ -29,9 +29,13 @@ const defaultUploadOptions: PayloadType = {
   useCurrentDir: true,
 };
 
+export class UploadContext<T> extends Context<T> {
+  uploadedFiles: any;
+}
+
 /**
  * Handle uploads
- * Use this middleware with CatchHook to catch errors
+ * Use this middleware with CatchHook to catch upload errors
  */
 export class UploadHook implements HookTarget<unknown, PayloadType> {
   async onPreAction(context: Context<unknown>, payload: PayloadType) {
@@ -158,7 +162,7 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
             }
           }
         }
-        (context as any)["uploadedFiles"] = res;
+        (context as UploadContext<unknown>).uploadedFiles = res;
       } else {
         throw new HttpError(
           422,

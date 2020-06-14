@@ -14,7 +14,7 @@ import {
   BadRequestError,
 } from "../../deps.ts";
 import { User, IUser } from "../../model/index.ts";
-import { CatchHook } from "../../hooks/error.ts";
+import { CatchHook, TokenHook } from "../../hooks/index.ts";
 import { ForbiddenError } from "../../deps.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
 import { JWT_TTL } from "../../env.ts";
@@ -63,18 +63,20 @@ export class AuthController {
     });
   }
 
+  @UseHook(TokenHook)
   @Get("/users")
   async list() {
     return await User
       .where("isMasterKey", false)
       .select(...SECURE_USER_FIELDS).all();
   }
-
+  @UseHook(TokenHook)
   @Get("/users/:id")
   getOne(@Param("id") id: number) {
     return User.select(...SECURE_USER_FIELDS).find(id);
   }
 
+  @UseHook(TokenHook)
   @Delete("/users/:id")
   async delete(@Req() request: Request, @Param("id") id: number) {
     this.canManage(request.headers);
@@ -88,7 +90,7 @@ export class AuthController {
   }
 
   @Post("/login")
-  async login(@Res() response: any, @Body() values: IUser) {
+  async login(@Body() values: IUser) {
     const user = await User.where("name", values.name).first();
     if (!user || !(await bcrypt.compare(values.token, user.token))) {
       throw new BadRequestError("Invalid credentials");
@@ -107,15 +109,19 @@ export class AuthController {
     return true;
   }
 
-  protected canManage(
+  protected async canManage(
     headers: Headers,
     masterKeyPayload: IUser | undefined = undefined,
   ) {
     const reqHeadersMasterKey = headers.get("master_key");
-    let masterKey: any = masterKeyPayload ?? this.masterKey();
+    let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
+
     if (
-      !reqHeadersMasterKey &&
-      reqHeadersMasterKey !== masterKey.token
+      !reqHeadersMasterKey && reqHeadersMasterKey !== masterKey.token &&
+      (await bcrypt.compare(
+        reqHeadersMasterKey as string,
+        masterKey.token,
+      ))
     ) {
       throw new ForbiddenError();
     }
@@ -134,7 +140,7 @@ export class AuthController {
     }
     return {
       data: await User.create(user as any),
-      token: { ...user, ...{ token: userKeyToken } },
+      user: { ...user, ...{ token: userKeyToken } },
     };
   }
 }
