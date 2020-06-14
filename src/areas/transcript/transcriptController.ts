@@ -13,6 +13,7 @@ import { Transcript, ITranscript } from "../../model/index.ts";
 import { TokenHook } from "../../hooks/auth.ts";
 import { CatchHook } from "../../hooks/error.ts";
 import { UploadHook, PayloadType } from "../../modules/upload/hook.ts";
+import { ws } from "../../modules/ws/server.ts";
 
 const transcriptUploadOptions: PayloadType = {
   path: "",
@@ -56,5 +57,15 @@ export class TranscriptController {
   @Post("/save-audio")
   async saveAudio(context: any) {
     return context.uploadedFiles;
+  }
+
+  @Post("/socket-flow")
+  async socketFlow(@Body() values: ITranscript) {
+    // appel bdd
+    this.add(values);
+    // generate port id
+    // 8082;
+    // create websocket server
+    ws();
   }
 }

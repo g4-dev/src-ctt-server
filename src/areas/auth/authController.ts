@@ -12,7 +12,6 @@ import {
   UseHook,
   bcrypt,
   BadRequestError,
-  setCookie,
 } from "../../deps.ts";
 import { User, IUser } from "../../model/index.ts";
 import { CatchHook } from "../../hooks/error.ts";
@@ -95,16 +94,6 @@ export class AuthController {
       throw new BadRequestError("Invalid credentials");
     }
     const token = User.generateJwt(user.id);
-    setCookie(
-      response,
-      {
-        name: "token",
-        value: token,
-        httpOnly: true,
-        secure: true,
-        maxAge: Number(JWT_TTL),
-      },
-    );
 
     return { token: token, expiration: Number(JWT_TTL) };
   }
