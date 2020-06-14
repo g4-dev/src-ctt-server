@@ -6,8 +6,7 @@ import {
 } from "https://deno.land/std/ws/mod.ts";
 
 /** websocket echo server */
-(async () => {
-  const port = Deno.args[0] || "8080";
+export const ws = async (port: number = 8082) => {
   console.log(`websocket server is running on :${port}`);
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
@@ -20,7 +19,7 @@ import {
         headers,
       });
 
-      console.log("socket connected!");
+      console.log("socket connected on : " + port);
 
       try {
         for await (const ev of sock) {
@@ -50,4 +49,4 @@ import {
       await req.respond({ status: 400 });
     }
   }
-})();
+};
