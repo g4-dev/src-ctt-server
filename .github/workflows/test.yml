@@ -6,11 +6,13 @@ jobs:
   build:
     env:
       DENO_INSTALL: "/Users/runner/.local"
+      DB_TYPE: sqlite3
     name: Ctt-server in ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-16.04]
+        os: [ubuntu-latest]
+        deno: [1.1.0]
 
     steps:
       - uses: actions/checkout@v2
