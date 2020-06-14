@@ -10,6 +10,7 @@ export async function createServer(
   const serverPromise = Deno.run({
     env: {
       DB_TYPE: "sqlite3",
+      IP: "http://127.0.0.1:9015",
     },
     cmd: [
       Deno.execPath(),
@@ -20,7 +21,7 @@ export async function createServer(
       "./tsconfig.app.json",
       serverPath,
     ],
-    stdout: "piped",
+    stdout: "inherit",
     stderr: "inherit",
   });
 
@@ -32,6 +33,7 @@ export async function startServer(): Promise<void> {
 }
 
 export function killServer(): void {
+  server.kill(server.pid);
   server.close();
   (server.stdout as any)?.close();
 }

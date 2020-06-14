@@ -14,9 +14,24 @@ soxa.defaults.validateStatus = function (status: number) {
 const testUser: IUser = {
   name: "test",
   token: "",
-  isMasterKey: false,
+  master: false,
 };
 let masterKeySave = "";
+
+// test({
+//   name: "[AUTH] Test protected route",
+//   async fn(): Promise<void> {
+//     await startServer("./app.ts");
+
+//     try {
+//       const home = await soxa.get("/");
+//       logger(home);
+//       assertEquals(home.status, 403);
+//     } finally {
+//       killServer();
+//     }
+//   },
+// });
 
 /**
  * Test cases
