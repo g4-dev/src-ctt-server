@@ -1,12 +1,12 @@
-import { assert } from "./deps.ts";
+import { assert, TextProtoReader, BufReader } from "./deps.ts";
 
 let server: Deno.Process;
 
-//const FIRST_MESSAGE: string = "INFO load deno";
+const FIRST_MESSAGE: string = "INFO load deno";
 
 export async function startServer(
   serverPath: string = "./app.ts",
-) {
+): Promise<null> {
   server = Deno.run({
     env: {
       DB_TYPE: "sqlite3",
@@ -21,30 +21,19 @@ export async function startServer(
       serverPath,
     ],
     stdout: "piped",
-    stderr: "piped",
+    stderr: "inherit",
   });
 
-  const { code } = await server.status();
-  console.log(code);
-  if (code === 0) {
-    const rawOutput = await server.output();
-    await Deno.stdout.write(rawOutput);
-  } else {
-    const rawError = await server.stderrOutput();
-    const errorString = new TextDecoder().decode(rawError);
-    console.log(errorString);
-  }
+  // Once server is ready it will write to its stdout.
+  assert(server.stdout != null);
+  const r = new TextProtoReader(new BufReader(server.stdout as any));
+  let s = await r.readLine();
+  assert(s !== null && s.includes(FIRST_MESSAGE));
 
-  //assert();
-
-  return Promise.resolve();
+  return Promise.resolve(null);
 }
 
 export function killServer(): void {
   server.close();
   (server.stdout as any)?.close();
-}
-
-export function itLog(s: string, firstIt = false): void {
-  firstIt ? console.log("\n" + s) : console.log(s);
 }
