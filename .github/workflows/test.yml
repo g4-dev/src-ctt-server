@@ -26,14 +26,9 @@ jobs:
           echo "::set-output name=date::$(/bin/date -u "+%Y_w%V")"
         shell: bash
 
-      - name: Test server
-        run: |
-          make schema
-          timeout --signal=0 30 make start
-
       - name: Tests E2E and units
         run: |
-          make tests
+          make tests-e2e -j2
 
       - name: Deno format check
         run: |

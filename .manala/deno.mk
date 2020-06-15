@@ -7,6 +7,9 @@ BIN_DIR:=bin
 TEST_DIR:=$(ENTRY_DIR)/tests
 TS_CONFIG:=tsconfig.app.json
 DENO_VERSION:=1.1.0
+# base app env
+PORT?=8081
+DB_TYPE?=
 # Argument group for different usages
 ARGS:= -A --config=$(TS_CONFIG) --unstable
 TEST_ARGS:=$(ARGS) --lock test.lock --lock-write
@@ -47,25 +50,27 @@ reload:
 full:
 	$(EXE) run $(ARGS) $(ENTRY)
 
+# Project binary to update db schema
+schema:
+	DB_TYPE=$(DB_TYPE) $(EXE) run $(ARGS) $(BIN_DIR)/schema.ts $(FORCE)
+
 # Start with debugger
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) run $(ARGS)  $(ENTRY)
+	$(DEBUG_EXE) run $(ARGS) $(ENTRY)
 	# --inspect-brk # TODO check update --inspect-brk
 
 lint:
 	deno fmt $(ENTRY_DIR)
 
 test-deco:
-	rm -rf $(TEST_DIR)/database.sqlite
+	rm -f $(TEST_DIR)/database.sqlite
 	touch $(TEST_DIR)/database.sqlite
+	deno cache --unstable src/deps.ts
 
 tests: test-deco
 	$(EXE) test $(TEST_ARGS)
-
-tests-debug: test-deco
-	$(EXE) test --failfast $(TEST_ARGS)
 
 install:
 	curl -fsSL https://deno.land/x/install/install.sh | sh -s v$(DENO_VERSION)

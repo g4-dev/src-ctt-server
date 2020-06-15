@@ -1,5 +1,5 @@
 import { assertEquals } from "./deps.ts";
-import { startServer, killServer } from "./test.utils.ts";
+//import { startServer, killServer } from "./test.utils.ts";
 import { IP, PORT } from "../env.ts";
 import { soxa } from "./deps.ts";
 
