@@ -68,6 +68,7 @@ test-deco:
 	rm -f $(TEST_DIR)/database.sqlite
 	touch $(TEST_DIR)/database.sqlite
 	deno cache --unstable src/deps.ts
+	$(MAKE) schema FORCE=true DB_TYPE=sqlite3
 
 tests: test-deco
 	$(EXE) test $(TEST_ARGS)

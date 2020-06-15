@@ -1,5 +1,5 @@
 import { startServer, killServer } from "./test.utils.ts";
-import { assertEquals } from "./deps.ts";
+import { assertEquals, delay } from "./deps.ts";
 import { IP, PORT } from "../env.ts";
 import { IUser } from "../model/index.ts";
 import { soxa } from "./deps.ts";
@@ -22,9 +22,9 @@ let masterKeySave = "";
  * Test cases
  */
 test({
-  name: "[AUTH] Test master Key and try login new user",
+  name: "[AUTH] Setup",
   async fn(): Promise<void> {
-    (async () => await startServer())();
+    startServer();
 
     try {
       // test auth protection
@@ -71,9 +71,9 @@ test({
 });
 
 test({
-  name: "[AUTH] Tests User CRULD",
+  name: "[AUTH] User CRULD",
   async fn(): Promise<void> {
-    (async () => await startServer())();
+    startServer()
     try {
       const userCreate = await soxa.get(`/users/create?name=${testUser}`, {
         headers: { master_key: masterKeySave },
@@ -88,7 +88,5 @@ test({
     }
   },
 });
-
-//killServer();
 
 export { masterKeySave, soxa };

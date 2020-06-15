@@ -1,12 +1,13 @@
-import { assert, TextProtoReader, BufReader } from "./deps.ts";
+import { assert } from "./deps.ts";
 
-let server: Deno.Process;
-const FIRST_MESSAGE: string = "INFO load deno";
+let server: any;
 
-export const startServer = async (
+//const FIRST_MESSAGE: string = "INFO load deno";
+
+export async function createServer(
   serverPath: string = "./app.ts",
-): Promise<unknown> => {
-  server = Deno.run({
+) {
+  const serverPromise = Deno.run({
     env: {
       DB_TYPE: "sqlite3",
     },
@@ -23,38 +24,12 @@ export const startServer = async (
     stderr: "inherit",
   });
 
-  let schema = Deno.run({
-    env: {
-      DB_TYPE: "sqlite3",
-    },
-    cmd: [
-      Deno.execPath(),
-      "run",
-      "-A",
-      "--unstable",
-      "--config",
-      "./tsconfig.app.json",
-      "bin/schema.ts",
-      "true", // force drop
-    ],
-    stdout: "piped",
-    stderr: "inherit",
-  });
+  return new Promise(() => serverPromise);
+}
 
-  // server wait stdout
-  assert(server.stdout != null);
-  //let r = new TextProtoReader(new BufReader(server.stdout as any));
-  //let s = await r.readLine();
-  //assert(s !== null && s.includes(FIRST_MESSAGE));
-
-  // Schema stdout
-  assert(schema.stdout != null);
-  //r = new TextProtoReader(new BufReader(schema.stdout as any));
-  //s = await r.readLine();
-  //assert(s !== null && s.includes(FIRST_MESSAGE));
-
-  return Promise.resolve;
-};
+export async function startServer(): Promise<void> {
+  server = await createServer();
+}
 
 export function killServer(): void {
   server.close();

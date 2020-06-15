@@ -26,9 +26,9 @@ jobs:
           echo "::set-output name=date::$(/bin/date -u "+%Y_w%V")"
         shell: bash
 
-      - name: Tests E2E and units
-        run: |
-          make tests-e2e -j2
+      # - name: Tests E2E and units
+      #   run: |
+      #     make tests
 
       - name: Deno format check
         run: |
