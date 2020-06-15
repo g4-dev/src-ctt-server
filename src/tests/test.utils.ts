@@ -32,7 +32,6 @@ export async function startServer(): Promise<void> {
 }
 
 export function killServer(): void {
-  Deno.kill(server.pid, Deno.Signal.SIGKILL);
   server.close();
   (server.stdout as any)?.close();
 }
