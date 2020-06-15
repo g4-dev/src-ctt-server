@@ -1,5 +1,5 @@
 import { startServer, killServer } from "./test.utils.ts";
-import { assertEquals, delay } from "./deps.ts";
+import { assertEquals } from "./deps.ts";
 import { IP, PORT } from "../env.ts";
 import { IUser } from "../model/index.ts";
 import { soxa } from "./deps.ts";
@@ -39,7 +39,7 @@ let masterKeySave = "";
 test({
   name: "[AUTH] Setup",
   async fn(): Promise<void> {
-    startServer();
+    await startServer();
 
     try {
       // test auth protection

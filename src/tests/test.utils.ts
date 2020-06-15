@@ -1,13 +1,13 @@
 import { assert } from "./deps.ts";
 
-let server: any;
+let server: Deno.Process;
 
 //const FIRST_MESSAGE: string = "INFO load deno";
 
-export async function createServer(
+export async function startServer(
   serverPath: string = "./app.ts",
 ) {
-  const serverPromise = Deno.run({
+  server = Deno.run({
     env: {
       DB_TYPE: "sqlite3",
     },
@@ -15,20 +15,29 @@ export async function createServer(
       Deno.execPath(),
       "run",
       "-A",
-      "--unstable",
       "--config",
       "./tsconfig.app.json",
+      "--unstable",
       serverPath,
     ],
     stdout: "piped",
-    stderr: "inherit",
+    stderr: "piped",
   });
 
-  return new Promise(() => serverPromise);
-}
+  const { code } = await server.status();
+  console.log(code);
+  if (code === 0) {
+    const rawOutput = await server.output();
+    await Deno.stdout.write(rawOutput);
+  } else {
+    const rawError = await server.stderrOutput();
+    const errorString = new TextDecoder().decode(rawError);
+    console.log(errorString);
+  }
 
-export async function startServer(): Promise<void> {
-  server = await createServer();
+  //assert();
+
+  return Promise.resolve();
 }
 
 export function killServer(): void {

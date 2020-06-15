@@ -11,4 +11,4 @@ node_modules
 *.swp
 *.bak
 .deno_plugins
-tests/*.sqlite
+/**/tests/database.sqlite
