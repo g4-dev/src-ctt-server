@@ -73,7 +73,7 @@ test({
 test({
   name: "[AUTH] User CRULD",
   async fn(): Promise<void> {
-    startServer()
+    startServer();
     try {
       const userCreate = await soxa.get(`/users/create?name=${testUser}`, {
         headers: { master_key: masterKeySave },
