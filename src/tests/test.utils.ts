@@ -1,10 +1,13 @@
-import { assert, TextProtoReader, BufReader } from "./deps.ts";
-export { soxa } from "https://deno.land/x/soxa/mod.ts";
+import { assert } from "./deps.ts";
 
-let server: Deno.Process;
+let server: any;
 
-export async function startServer(serverPath: string): Promise<void> {
-  server = Deno.run({
+//const FIRST_MESSAGE: string = "INFO load deno";
+
+export async function createServer(
+  serverPath: string = "./app.ts",
+) {
+  const serverPromise = Deno.run({
     env: {
       DB_TYPE: "sqlite3",
     },
@@ -12,28 +15,25 @@ export async function startServer(serverPath: string): Promise<void> {
       Deno.execPath(),
       "run",
       "-A",
-      "--config",
-      "tsconfig.json",
       "--unstable",
+      "--config",
+      "./tsconfig.app.json",
       serverPath,
     ],
     stdout: "piped",
     stderr: "inherit",
   });
-  // Once server is ready it will write to its stdout.
-  assert(server.stdout != null);
 
-  const r = new TextProtoReader(new BufReader(server.stdout));
-  let s = await r.readLine();
+  return new Promise(() => serverPromise);
+}
 
-  assert(s !== null && s.includes("Server start in"));
-
-  return Promise.resolve();
+export async function startServer(): Promise<void> {
+  server = await createServer();
 }
 
 export function killServer(): void {
   server.close();
-  server.stdout?.close();
+  (server.stdout as any)?.close();
 }
 
 export function itLog(s: string, firstIt = false): void {

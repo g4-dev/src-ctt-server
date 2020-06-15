@@ -14,10 +14,6 @@ USER deno
 
 COPY ./src .
 
-RUN ls -la
-
 RUN deno run -A --unstable --config=tsconfig.json bin/schema.ts
-
-#CMD ["deno", "run", "-A", "--unstable", "--config=tsconfig.json", "bin/schema.ts"]
 
 CMD ["run", "-A", "--unstable", "--config=tsconfig.json", "app.ts"]

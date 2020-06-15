@@ -5,10 +5,14 @@ ENTRY:=app.ts
 IMPORT_MAP:=import-map.json
 BIN_DIR:=bin
 TEST_DIR:=$(ENTRY_DIR)/tests
-TS_CONFIG:=tsconfig.json
-DENO_VERSION:=1.0.2
+TS_CONFIG:=tsconfig.app.json
+DENO_VERSION:=1.1.0
+# base app env
+PORT?=8081
+DB_TYPE?=
 # Argument group for different usages
 ARGS:= -A --config=$(TS_CONFIG) --unstable
+TEST_ARGS:=$(ARGS) --lock test.lock --lock-write
 
 EXE:=cd $(ENTRY_DIR) && deno
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon
@@ -43,29 +47,31 @@ start:
 reload:
 	$(EXE) run --reload $(ARGS) $(ENTRY)
 
-prod:
-	$(EXE) run -M info $(ARGS) $(ENTRY)
-
 full:
 	$(EXE) run $(ARGS) $(ENTRY)
 
-lint:
-	deno fmt $(ENTRY_DIR)
-
-tests:
-	touch $(TEST_DIR)/database.sqlite
-	$(EXE) test $(ARGS)
-
-tests-debug:
-	touch $(TEST_DIR)/database.sqlite
-	$(EXE) test -L info --failfast $(ARGS)
+# Project binary to update db schema
+schema:
+	DB_TYPE=$(DB_TYPE) $(EXE) run $(ARGS) $(BIN_DIR)/schema.ts $(FORCE)
 
 # Start with debugger
 debug:
 	@echo 'Start in Debug mode : '
 	@echo 'Open chrome://inspect/#devices'
-	$(DEBUG_EXE) run $(ARGS)  $(ENTRY)
+	$(DEBUG_EXE) run $(ARGS) $(ENTRY)
 	# --inspect-brk # TODO check update --inspect-brk
+
+lint:
+	deno fmt $(ENTRY_DIR)
+
+test-deco:
+	rm -f $(TEST_DIR)/database.sqlite
+	touch $(TEST_DIR)/database.sqlite
+	deno cache --unstable src/deps.ts
+	$(MAKE) schema FORCE=true DB_TYPE=sqlite3
+
+tests: test-deco
+	$(EXE) test $(TEST_ARGS)
 
 install:
 	curl -fsSL https://deno.land/x/install/install.sh | sh -s v$(DENO_VERSION)

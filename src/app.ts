@@ -4,4 +4,4 @@ import { container } from "./config/container.ts";
 
 const app = new App(container);
 
-await app.listen(`${IP}:${PORT || 80}`);
+app.listen(`${IP}:${PORT || 80}`);

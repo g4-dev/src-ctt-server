@@ -10,7 +10,7 @@ import {
 } from "../env.ts";
 
 // Test db is a prefilled mysqlite raft
-const dbMapping: any = {
+export const dbMapping: any = {
   "mysql": {
     host: DB_HOST,
     username: DB_USER,

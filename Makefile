@@ -13,10 +13,6 @@ APP_PROD?=
 help_more:
 	@echo "[====== src-ctt-server =====]"
 
-# Project binary to update db schema
-schema:
-	$(EXE) run $(ARGS) $(BIN_DIR)/schema.ts
-
 openapi:
 	$(EXE) run $(ARGS) config/openapi.ts
 

@@ -1,7 +1,7 @@
 import { assertEquals } from "./deps.ts";
-import { startServer, killServer } from "./test.utils.ts";
+//import { startServer, killServer } from "./test.utils.ts";
 import { IP, PORT } from "../env.ts";
-import { soxa } from "./test.utils.ts";
+import { soxa } from "./deps.ts";
 
 const { test } = Deno;
 
