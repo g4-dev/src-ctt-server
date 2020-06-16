@@ -65,11 +65,15 @@ lint:
 	deno fmt $(ENTRY_DIR)
 
 test-deco:
-	echo -n '' >$(TEST_DIR)/database.sqlite
+	rm -rf $(TEST_DIR)/database.sqlite
+	touch $(TEST_DIR)/database.sqlite
+	deno cache --unstable $(ENTRY_DIR)/deps.ts
+	deno cache --unstable $(TEST_DIR)/deps.ts
 	$(MAKE) schema FORCE=true DB_TYPE=sqlite3
 
 tests: test-deco
 	$(EXE) test $(TEST_ARGS)
+	lsof -i:$(PORT) -Fp | sed 's/^p//' | xargs kill -9
 
 install:
 	curl -fsSL https://deno.land/x/install/install.sh | sh -s v$(DENO_VERSION)

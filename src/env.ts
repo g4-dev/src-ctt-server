@@ -14,4 +14,6 @@ export const {
   // Api auth
   JWT_KEY,
   JWT_TTL,
+  // Cors
+  ORIGINS,
 } = Deno.env.toObject();

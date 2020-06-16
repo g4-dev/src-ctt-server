@@ -6,7 +6,7 @@ const FIRST_MESSAGE: string = "INFO load deno";
 
 export async function startServer(
   serverPath: string = "./app.ts",
-): Promise<null> {
+): Promise<any> {
   server = Deno.run({
     env: {
       DB_TYPE: "sqlite3",
@@ -24,13 +24,13 @@ export async function startServer(
     stderr: "inherit",
   });
 
-  // Once server is ready it will write to its stdout.
+  // Once process is ready it will write to its stdout.
   assert(server.stdout != null);
   const r = new TextProtoReader(new BufReader(server.stdout as any));
   let s = await r.readLine();
   assert(s !== null && s.includes(FIRST_MESSAGE));
 
-  return Promise.resolve(null);
+  return Promise.resolve();
 }
 
 export function killServer(): void {

@@ -14,3 +14,5 @@ export * from "https://deno.land/x/alosaur/mod.ts";
 export { Model, DataTypes, Database } from "https://deno.land/x/denodb/mod.ts";
 
 export { nanoid } from "https://deno.land/x/nanoid/mod.ts";
+
+export { readJson } from "https://deno.land/std/fs/mod.ts";

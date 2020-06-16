@@ -8,9 +8,9 @@ import {
   DB_PORT,
   DB_TYPE,
 } from "../env.ts";
-console.warn(DB_TYPE);
+
 // Test db is a prefilled mysqlite raft
-export const dbMapping: any = {
+const dbMapping: any = {
   "mysql": {
     host: DB_HOST,
     username: DB_USER,

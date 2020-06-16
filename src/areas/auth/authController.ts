@@ -6,7 +6,6 @@ import {
   Param,
   Body,
   Req,
-  Res,
   Delete,
   QueryParam,
   UseHook,
@@ -37,8 +36,6 @@ export class AuthController {
    *    headers: { masterKey: string }
    * }
    * @param name User name (need name master to create masterKey)
-   *
-   * @returns {IUser}
    */
   @Get("/users/create")
   async create(
@@ -72,19 +69,26 @@ export class AuthController {
   }
   @UseHook(TokenHook)
   @Get("/users/:id")
-  getOne(@Param("id") id: number) {
-    return User.select(...SECURE_USER_FIELDS).find(id);
+  async getOne(
+    @Param("id") id: string,
+  ) {
+    let qb: any = User.select(...SECURE_USER_FIELDS);
+    const user = isNaN(Number(id))
+      ? await qb.where("name", id).first()
+      : await qb.find(id);
+
+    return user;
   }
 
   @UseHook(TokenHook)
   @Delete("/users/:id")
   async delete(@Req() request: Request, @Param("id") id: number) {
     this.canManage(request.headers);
-    await User
-      .where("isMasterKey", false)
-      .deleteById(id);
 
     return {
+      ...await User
+        .where("isMasterKey", false)
+        .deleteById(id),
       data: "deleted: " + id,
     };
   }
@@ -102,7 +106,7 @@ export class AuthController {
 
   @Get("/setup")
   async setup() {
-    if (!this.masterKey()) {
+    if (!(await this.masterKey())) {
       throw new ForbiddenError("Setup already done");
     }
 
@@ -115,7 +119,7 @@ export class AuthController {
   ) {
     const reqHeadersMasterKey = headers.get("master_key");
     let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
-
+    console.log(headers);
     if (
       !reqHeadersMasterKey && reqHeadersMasterKey !== masterKey.token &&
       (await bcrypt.compare(
@@ -123,7 +127,7 @@ export class AuthController {
         masterKey.token,
       ))
     ) {
-      throw new ForbiddenError();
+      throw new ForbiddenError("Can't manage users");
     }
   }
 

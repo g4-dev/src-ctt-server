@@ -40,7 +40,8 @@ test({
   name: "[AUTH] Setup",
   async fn(): Promise<void> {
     await startServer();
-    setTimeout(() => {}, 300);
+    // wait server start if deno load plugin
+    setTimeout(() => {}, 1000);
 
     try {
       // test auth protection
@@ -53,14 +54,12 @@ test({
 
       // create master key (user)
       const masterKey = await soxa.get("/users/create?name=master");
-      console.log(masterKey);
       assertEquals(
         masterKey.status,
         200,
         "[/users/create] (master init) : Master key should be created",
       );
       masterKeySave = masterKey.data.user.token;
-      console.log(masterKeySave);
 
       // login with master
       const masterLogin = await soxa.post("/login", {
@@ -93,7 +92,9 @@ test({
   name: "[AUTH] User CRULD",
   async fn(): Promise<void> {
     await startServer();
-    setTimeout(() => {}, 300);
+    // wait server start if deno load plugin
+    setTimeout(() => {}, 1000);
+
     try {
       const userCreate = await soxa.get(`/users/create?name=${testUser.name}`, {
         headers: { master_key: masterKeySave },
