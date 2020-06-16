@@ -101,7 +101,10 @@ export class AuthController {
     }
     const token = User.generateJwt(user.id);
 
-    return { token: token, expiration: Number(JWT_TTL) };
+    return {
+      token: token,
+      expiration: new Date(new Date().getTime() + Number(JWT_TTL)).toString(),
+    };
   }
 
   @Get("/setup")
@@ -119,7 +122,6 @@ export class AuthController {
   ) {
     const reqHeadersMasterKey = headers.get("master_key");
     let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
-    console.log(headers);
     if (
       !reqHeadersMasterKey && reqHeadersMasterKey !== masterKey.token &&
       (await bcrypt.compare(
