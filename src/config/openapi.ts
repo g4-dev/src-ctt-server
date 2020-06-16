@@ -6,9 +6,13 @@ AlosaurOpenApiBuilder
   .create(container)
   .addTitle("Call2Text Api")
   .addVersion("0.0.1")
-  .addDescription(`OpenApi generated doc API on (${IP}:${PORT})`)
+  .addDescription(`Documentation de l'api de Call2Text`)
   .addServer({
-    url: IP,
-    description: "Call2Text Api",
+    url: `${IP}:${PORT}`,
+    description: "Call2Text Api Dev",
+  })
+  .addServer({
+    url: "http://ctt-server.loicroux.com:81/",
+    description: "Call2Text Api Production",
   })
   .saveToFile("./api.json");

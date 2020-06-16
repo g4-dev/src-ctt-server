@@ -23,12 +23,6 @@ const SECURE_USER_FIELDS = ["name", "created_at", "updated_at"];
 @UseHook(CatchHook)
 @Controller()
 export class AuthController {
-  // Verify if master key object exist
-  protected async masterKey(): Promise<IUser> {
-    return await User.select("token")
-      .where("isMasterKey", true)
-      .first();
-  }
   /**
    * Create an User from master key or create Master key (UUID)
    *
@@ -67,6 +61,7 @@ export class AuthController {
       .where("isMasterKey", false)
       .select(...SECURE_USER_FIELDS).all();
   }
+
   @UseHook(TokenHook)
   @Get("/users/:id")
   async getOne(
@@ -114,6 +109,13 @@ export class AuthController {
     }
 
     return true;
+  }
+
+  // Verify if master key object exist
+  protected async masterKey(): Promise<IUser> {
+    return await User.select("token")
+      .where("isMasterKey", true)
+      .first();
   }
 
   protected async canManage(
