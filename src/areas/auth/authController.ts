@@ -16,7 +16,7 @@ import { User, IUser } from "../../model/index.ts";
 import { CatchHook, TokenHook } from "../../hooks/index.ts";
 import { ForbiddenError } from "../../deps.ts";
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
-import { JWT_TTL } from "../../env.ts";
+import { JwtConfig } from "../../config/jwt.ts";
 
 const SECURE_USER_FIELDS = ["name", "created_at", "updated_at"];
 
@@ -98,7 +98,7 @@ export class AuthController {
 
     return {
       token: token,
-      expiration: new Date(new Date().getTime() + Number(JWT_TTL)).toString(),
+      expiration: new Date(JwtConfig.expirationTime).toString(),
     };
   }
 

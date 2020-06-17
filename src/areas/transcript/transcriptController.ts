@@ -7,22 +7,23 @@ import {
   Param,
   UseHook,
   NotFoundError,
-  Context,
+  Req,
+  QueryParam,
 } from "../../deps.ts";
 import { Transcript, ITranscript } from "../../model/index.ts";
-import { TokenHook } from "../../hooks/auth.ts";
-import { CatchHook } from "../../hooks/error.ts";
+import { TokenHook, CatchHook, FormDataHook } from "../../hooks/index.ts";
 import {
   UploadHook,
   PayloadType,
   UploadContext,
 } from "../../modules/upload/hook.ts";
 import { ws } from "../../modules/ws/server.ts";
+import { text } from "../../modules/ws/text.ts";
 
 const transcriptUploadOptions: PayloadType = {
-  path: "",
-  extensions: ["jpg", "png"],
-  maxSizeBytes: 10000000,
+  path: "./uploads/audios",
+  extensions: ["wav"],
+  maxSizeBytes: -1,
   maxFileSizeBytes: -1,
   saveFile: true,
   readFile: false,
@@ -57,20 +58,23 @@ export class TranscriptController {
     return transcript;
   }
 
+  @UseHook(FormDataHook)
   @UseHook(UploadHook, transcriptUploadOptions)
   @Post("/save-audio")
-  async saveAudio(context: UploadContext<unknown>) {
+  async saveAudio(
+    @QueryParam("uuid") uuid: string,
+    context: UploadContext<unknown>,
+  ) {
     console.log(context.uploadedFiles);
     return context.uploadedFiles;
   }
 
-  @Post("/socket-flow")
-  async socketFlow(@Body() values: ITranscript) {
+  @Get("/socket")
+  async socket(@Req() request: any) {
+    console.log("Entered in websock");
     // appel bdd
-    this.add(values);
-    // generate port id
-    // 8082;
     // create websocket server
-    ws();
+    await ws(request).then(text);
+    //await this.add(values);
   }
 }

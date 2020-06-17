@@ -35,7 +35,7 @@ export class User extends Model {
   static generateJwt(id: string) {
     const payload: Payload = {
       id,
-      exp: setExpiration(new Date().getTime() + JwtConfig.expirationTime),
+      exp: setExpiration(JwtConfig.expirationTime),
     };
     const header: Jose = {
       alg: JwtConfig.alg as Jose["alg"],

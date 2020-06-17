@@ -17,7 +17,7 @@ openapi:
 	$(EXE) run $(ARGS) config/openapi.ts
 
 ws:
-	$(EXE) run $(ARGS) modules/ws/server.ts
+	$(EXE) run $(ARGS) modules/ws/runner.ts
 
 refresh-site:
 	curl --basic --request POST --user $(TOKEN): $(API)/site/$(SITE_ID)/restart/

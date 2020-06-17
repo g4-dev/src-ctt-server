@@ -1,6 +1,7 @@
 import { Database } from "../deps.ts";
 import { Transcript, User } from "../model/index.ts";
 import {
+  APP_DEBUG,
   DB_HOST,
   DB_NAME,
   DB_PASSWORD,
@@ -24,7 +25,7 @@ const dbMapping: any = {
 };
 
 const db = new Database(
-  DB_TYPE || "mysql" as any,
+  { dialect: DB_TYPE || "mysql" as any, debug: Boolean(APP_DEBUG) },
   dbMapping[DB_TYPE || "mysql"],
 );
 

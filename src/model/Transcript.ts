@@ -17,12 +17,12 @@ export class Transcript extends Model {
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    uuid: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
     },
-    content: {
-      type: DataTypes.TEXT,
+    path: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     status: {
