@@ -25,7 +25,7 @@ const dbMapping: any = {
 };
 
 const db = new Database(
-  { dialect: DB_TYPE || "mysql" as any, debug: Boolean(APP_DEBUG) },
+  { dialect: DB_TYPE || "mysql" as any, debug: APP_DEBUG === "true" },
   dbMapping[DB_TYPE || "mysql"],
 );
 

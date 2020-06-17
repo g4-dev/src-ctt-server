@@ -12,3 +12,4 @@ node_modules
 *.bak
 .deno_plugins
 /**/tests/database.sqlite
+src/uploads

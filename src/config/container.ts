@@ -8,5 +8,5 @@ import { APP_DEBUG } from "../env.ts";
 export const container: AppSettings = {
   areas: [AuthArea, TranscriptArea, HomeArea],
   middlewares: [Log],
-  logging: Boolean(APP_DEBUG),
+  logging: APP_DEBUG === "true",
 };

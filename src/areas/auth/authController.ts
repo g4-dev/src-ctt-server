@@ -15,7 +15,7 @@ import {
 import { User, IUser } from "../../model/index.ts";
 import { CatchHook, TokenHook } from "../../hooks/index.ts";
 import { ForbiddenError } from "../../deps.ts";
-import { v4 } from "https://deno.land/std/uuid/mod.ts";
+import { v4 } from "../../deps.ts";
 import { JwtConfig } from "../../config/jwt.ts";
 
 const SECURE_USER_FIELDS = ["name", "created_at", "updated_at"];
@@ -40,7 +40,7 @@ export class AuthController {
     if (!masterKey as boolean && name == "master") {
       return this.createUser({
         name: "master",
-        isMasterKey: true,
+        master: true,
         token: "",
       });
     }
@@ -50,7 +50,7 @@ export class AuthController {
     return this.createUser({
       name: name,
       token: "",
-      isMasterKey: false,
+      master: false,
     });
   }
 
@@ -58,7 +58,7 @@ export class AuthController {
   @Get("/users")
   async list() {
     return await User
-      .where("isMasterKey", false)
+      .where("master", false)
       .select(...SECURE_USER_FIELDS).all();
   }
 
@@ -82,7 +82,7 @@ export class AuthController {
 
     return {
       ...await User
-        .where("isMasterKey", false)
+        .where("master", false)
         .deleteById(id),
       data: "deleted: " + id,
     };
@@ -114,7 +114,7 @@ export class AuthController {
   // Verify if master key object exist
   protected async masterKey(): Promise<IUser> {
     return await User.select("token")
-      .where("isMasterKey", true)
+      .where("master", true)
       .first();
   }
 
@@ -135,12 +135,12 @@ export class AuthController {
     }
   }
 
-  protected async createUser({ name, isMasterKey = false }: IUser) {
+  protected async createUser({ name, master = false }: IUser) {
     const userKeyToken = v4.generate();
     const user: IUser = {
       name: name,
       token: await User.hashToken(userKeyToken),
-      isMasterKey: isMasterKey,
+      master: master,
     };
 
     if (await User.where("name", name).first()) {
