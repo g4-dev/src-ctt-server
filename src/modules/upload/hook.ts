@@ -46,8 +46,6 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
         useCurrentDir,
       }: PayloadType = { ...defaultUploadOptions, ...payload };
 
-      console.log(path);
-
       ensureDirSync(join(Deno.cwd(), "temp_uploads"));
       if (
         parseInt(context.request.headers.get("content-length") as string) >
@@ -84,7 +82,9 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
           for (const val of values) {
             if (val.filename !== undefined) {
               if (extensions.length > 0) {
+                console.log(val.filename);
                 let ext = val.filename.split(".").pop();
+                console.log(ext);
                 if (!extensions.includes(ext)) {
                   validations +=
                     `The file extension is not allowed (${ext} in ${val.filename}), allowed extensions: ${extensions}. `;

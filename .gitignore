@@ -13,3 +13,4 @@ node_modules
 .deno_plugins
 /**/tests/database.sqlite
 src/uploads
+!public.html

@@ -16,8 +16,8 @@ import { TokenHook, CatchHook } from "../../hooks/index.ts";
 import {
   UploadHook,
 } from "../../modules/upload/hook.ts";
-import { ws } from "../../modules/ws/server.ts";
-import { text } from "../../modules/ws/text.ts";
+//import { ws } from "../../modules/ws/server.ts";
+//import { text } from "../../modules/ws/text.ts";
 //import { acceptWebSocket } from "../../modules/ws/deps.ts";
 
 const transcriptUploadOptions: any = {
@@ -67,8 +67,8 @@ export class TranscriptController {
    * Upload a single audio for a transcript providing id / uuid
    * 
    * @param request {
-   *    @param uploadedFiles : {
-   *      @param uuid {
+   *    uploadedFiles : {
+   *      uuid {
    *        url: string
    *        uri: string,
    *        mime: audio/wave

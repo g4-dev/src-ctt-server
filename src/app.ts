@@ -7,4 +7,10 @@ const app = new App(container);
 
 app.useCors(Cors);
 
+app.useStatic({
+  root: `${Deno.cwd()}/uploads/`,
+  index: "public.html",
+  baseRoute: "/", // or undefined for default route /
+});
+
 app.listen(`${IP}:${PORT || 80}`);
