@@ -29,17 +29,12 @@ const defaultUploadOptions: PayloadType = {
   useCurrentDir: true,
 };
 
-export class UploadContext<T> extends Context<T> {
-  uploadedFiles: any;
-}
-
 /**
  * Handle uploads
  * Use this middleware with CatchHook to catch upload errors
  */
 export class UploadHook implements HookTarget<unknown, PayloadType> {
   async onPreAction(context: Context<unknown>, payload: PayloadType) {
-    console.log("Trying upload");
     return new Promise(async (resolve, reject) => {
       const {
         path,
@@ -80,7 +75,6 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
           context.request.serverRequest.body,
           formBoundary,
         );
-        console.log(mr);
         const form = await mr.readForm(0);
         let res: any = {};
         let entries: any = Array.from(form.entries());
@@ -171,7 +165,7 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
           }
         }
         console.log(res);
-        resolve((context as any).uploadedFiles = res);
+        resolve((context as any).request.uploadedFiles = res);
       } else {
         reject(
           new HttpError(

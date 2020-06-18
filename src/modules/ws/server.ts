@@ -4,12 +4,13 @@ import {
 } from "./deps.ts";
 
 /** websocket base server */
-export const ws = async (req: any) => {
+export function ws(req: any): Promise<any> {
   try {
-    const { conn, r: bufReader, w: bufWriter, headers } = req;
     if (!acceptable(req)) {
-      throw new Error("Refused websocket");
+      throw new Error("Non acceptable websocket");
     }
+
+    const { conn, r: bufReader, w: bufWriter, headers } = req;
 
     return acceptWebSocket({
       conn,
@@ -18,7 +19,6 @@ export const ws = async (req: any) => {
       headers,
     });
   } catch (err) {
-    console.error(`failed to accept websocket: ${err}`);
-    await req.respond({ status: 400 });
+    throw err;
   }
-};
+}

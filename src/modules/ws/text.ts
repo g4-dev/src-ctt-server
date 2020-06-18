@@ -1,8 +1,9 @@
 import {
   WebSocket,
   isWebSocketCloseEvent,
+  isWebSocketPingEvent,
 } from "./deps.ts";
-import { v4, readLines, StringReader } from "./deps.ts";
+import { readLines, StringReader } from "./deps.ts";
 
 const transcripts = new Map<string, WebSocket>();
 //export const BOUNDARY = "\n---ws---\n";
@@ -12,7 +13,7 @@ async function broadcast(message: string, senderId: string): Promise<void> {
   if (!message) return;
   for (const transcript of transcripts.values()) {
     transcript.send(senderId ? `[${senderId}] : ${message}` : message);
-
+    console.log(message);
     const encoder = new TextEncoder();
     await Deno.writeFile(senderId, new Uint8Array());
 
@@ -29,27 +30,36 @@ async function broadcast(message: string, senderId: string): Promise<void> {
 }
 
 export async function text(ws: WebSocket | undefined) {
-  const transcriptUUID = v4.generate();
-
   if (!ws) {
-    return;
+    throw new Error("Websocket refused");
   }
+  const uuid = "test";
+  //ws.headers.get("uuid");
 
   // Register user connection
-  transcripts.set(transcriptUUID, ws);
-  console.log(`> Transcript with : ${transcriptUUID} is in progress`);
+  transcripts.set(uuid, ws);
+  console.log(`> Object with : ${uuid} is in progress`);
 
-  // Wait for new messages
-  for await (const event of ws) {
-    const message = typeof event === "string" ? event : "";
+  try {
+    // Wait for new messages
+    console.log(ws);
+    // TODO: Bad resource ID
+    for await (const event of ws) {
+      console.log("ev", event);
+      const message = typeof event === "string" ? event : "";
 
-    broadcast(message, transcriptUUID);
+      broadcast(message, uuid);
 
-    // Unregister user conection
-    if (!message && isWebSocketCloseEvent(event)) {
-      transcripts.delete(transcriptUUID);
-      console.log(`Disconnected ${transcriptUUID}`);
-      break;
+      // Unregister user conection
+      if (!message && isWebSocketCloseEvent(event)) {
+        transcripts.delete(uuid);
+        console.log(`Disconnected ${uuid}`);
+        break;
+      }
+    }
+  } catch (e) {
+    if (!ws.isClosed) {
+      ws.close(1000).catch(console.error);
     }
   }
 }
