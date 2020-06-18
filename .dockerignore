@@ -1,0 +1,4 @@
+.git
+.cache
+src/uploads/*
+!public.html

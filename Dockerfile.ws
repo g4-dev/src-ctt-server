@@ -6,12 +6,12 @@ EXPOSE 8082
 
 WORKDIR /app
 
+COPY ./src .
+
 USER root
 
 RUN chown -R deno:deno /app
 
 USER deno
 
-COPY ./src .
-
-CMD ["run", "-A", "--unstable", "--config=tsconfig.json", "modules/ws/runner.ts"]
+CMD ["run", "-A", "--unstable", "--config=tsconfig.app.json", "modules/ws/runner.ts"]

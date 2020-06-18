@@ -7,13 +7,15 @@ import {
   WebSocket,
 } from "https://deno.land/std/ws/mod.ts";
 
+const transcripts = new Map<string, WebSocket>();
+
 async function handleWs(sock: WebSocket) {
   console.log("socket connected!");
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {
         // text message
-        console.log("ws:Text", ev);
+        console.log(ev);
         await sock.send(ev);
       } else if (ev instanceof Uint8Array) {
         // binary message
@@ -43,7 +45,6 @@ if (import.meta.main) {
   console.log(`websocket server is running on :${port}`);
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
-    console.log(req);
     acceptWebSocket({
       conn,
       bufReader,

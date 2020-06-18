@@ -34,7 +34,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.backend=ctt_server"
-      - "traefik.frontend.rule=Host:ctt-server.loicroux.com"
+      - "traefik.frontend.rule=Host:ws.ctt-server.loicroux.com"
       - "traefik.port=80"
       - "traefik.backend.loadbalancer.method=wrr"
       - "traefik.backend.loadbalancer.sticky=false"
