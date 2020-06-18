@@ -16,10 +16,6 @@ import { TokenHook, CatchHook } from "../../hooks/index.ts";
 import {
   UploadHook,
 } from "../../modules/upload/hook.ts";
-import {
-  acceptWebSocket,
-} from "https://deno.land/std/ws/mod.ts";
-import { text } from "../../modules/ws/text.ts";
 
 const transcriptUploadOptions: any = {
   path: "./uploads",
@@ -79,7 +75,6 @@ export class TranscriptController {
    *    }
    * }
    */
-
   @UseHook(UploadHook, transcriptUploadOptions)
   @Post("/done")
   async saveAudio(@Req() request: any) {

@@ -2,6 +2,7 @@ import "https://deno.land/x/dotenv/load.ts";
 
 export const {
   APP_DEBUG,
+  WS_PORT,
   // App
   IP,
   PORT,

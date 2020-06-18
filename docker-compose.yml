@@ -28,7 +28,7 @@ services:
     networks:
       lcom:
           aliases:
-            - ctt-server.loicroux.com
+            - ws.ctt-server.loicroux.com
     ports:
       - "82:8082"
     labels:

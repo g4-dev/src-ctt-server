@@ -46,10 +46,11 @@ export class AuthController {
     }
 
     this.canManage(request.headers, masterKey);
+    const token = request.headers.get("choosen_token") || "";
 
     return this.createUser({
       name: name,
-      token: "",
+      token,
       master: false,
     });
   }
@@ -122,11 +123,11 @@ export class AuthController {
     headers: Headers,
     masterKeyPayload: IUser | undefined = undefined,
   ) {
-    const reqHeadersMasterKey = headers.get("master_key");
+    const reqHeadersMasterKey = headers.get("master_key") || null;
     let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
     if (
-      !reqHeadersMasterKey && reqHeadersMasterKey !== masterKey.token &&
-      (await bcrypt.compare(
+      !reqHeadersMasterKey &&
+      !(await bcrypt.compare(
         reqHeadersMasterKey as string,
         masterKey.token,
       ))
@@ -135,8 +136,8 @@ export class AuthController {
     }
   }
 
-  protected async createUser({ name, master = false }: IUser) {
-    const userKeyToken = v4.generate();
+  protected async createUser({ name, token = "", master = false }: IUser) {
+    const userKeyToken = token !== "" ? token : v4.generate();
     const user: IUser = {
       name: name,
       token: await User.hashToken(userKeyToken),

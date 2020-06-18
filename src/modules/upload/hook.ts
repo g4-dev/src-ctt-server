@@ -122,7 +122,10 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
                     d.getSeconds().toString(),
                     v4.generate(),
                   )
-                  : d.toISOString().slice(0, 10).replace(/-/g, "_");
+                  : d.toISOString().slice(0, 10).replace(/-/g, "_") +
+                    d.getHours().toString() +
+                    d.getMinutes().toString() +
+                    d.getSeconds().toString();
                 const uploadPath = join(path, uuid);
                 let fullPath = uploadPath;
                 if (useCurrentDir) {
