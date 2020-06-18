@@ -1,2 +1,2 @@
-export { Transcript, ITranscript } from "./Transcript.ts";
-export { User, IUser } from "./User.ts";
+export * from "./Transcript.ts";
+export * from "./User.ts";

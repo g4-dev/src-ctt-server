@@ -12,7 +12,7 @@ PORT?=8081
 DB_TYPE?=
 # Argument group for different usages
 ARGS:= -A --config=$(TS_CONFIG) --unstable
-TEST_ARGS:=$(ARGS) --lock test.lock --lock-write
+TEST_ARGS:=$(ARGS)
 
 EXE:=cd $(ENTRY_DIR) && deno
 DEBUG_EXE:=cd $(ENTRY_DIR) && denon
@@ -65,13 +65,14 @@ lint:
 	deno fmt $(ENTRY_DIR)
 
 test-deco:
-	rm -f $(TEST_DIR)/database.sqlite
+	rm -rf $(TEST_DIR)/database.sqlite
 	touch $(TEST_DIR)/database.sqlite
-	deno cache --unstable src/deps.ts
+	deno cache --unstable $(ENTRY_DIR)/deps.ts
 	$(MAKE) schema FORCE=true DB_TYPE=sqlite3
 
 tests: test-deco
 	$(EXE) test $(TEST_ARGS)
+	lsof -i:$(PORT) -Fp | sed 's/^p//' | xargs kill -9
 
 install:
 	curl -fsSL https://deno.land/x/install/install.sh | sh -s v$(DENO_VERSION)

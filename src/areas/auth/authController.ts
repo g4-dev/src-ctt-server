@@ -6,7 +6,6 @@ import {
   Param,
   Body,
   Req,
-  Res,
   Delete,
   QueryParam,
   UseHook,
@@ -16,20 +15,14 @@ import {
 import { User, IUser } from "../../model/index.ts";
 import { CatchHook, TokenHook } from "../../hooks/index.ts";
 import { ForbiddenError } from "../../deps.ts";
-import { v4 } from "https://deno.land/std/uuid/mod.ts";
-import { JWT_TTL } from "../../env.ts";
+import { v4 } from "../../deps.ts";
+import { JwtConfig } from "../../config/jwt.ts";
 
 const SECURE_USER_FIELDS = ["name", "created_at", "updated_at"];
 
 @UseHook(CatchHook)
 @Controller()
 export class AuthController {
-  // Verify if master key object exist
-  protected async masterKey(): Promise<IUser> {
-    return await User.select("token")
-      .where("isMasterKey", true)
-      .first();
-  }
   /**
    * Create an User from master key or create Master key (UUID)
    *
@@ -37,8 +30,6 @@ export class AuthController {
    *    headers: { masterKey: string }
    * }
    * @param name User name (need name master to create masterKey)
-   *
-   * @returns {IUser}
    */
   @Get("/users/create")
   async create(
@@ -49,7 +40,7 @@ export class AuthController {
     if (!masterKey as boolean && name == "master") {
       return this.createUser({
         name: "master",
-        isMasterKey: true,
+        master: true,
         token: "",
       });
     }
@@ -59,7 +50,7 @@ export class AuthController {
     return this.createUser({
       name: name,
       token: "",
-      isMasterKey: false,
+      master: false,
     });
   }
 
@@ -67,24 +58,32 @@ export class AuthController {
   @Get("/users")
   async list() {
     return await User
-      .where("isMasterKey", false)
+      .where("master", false)
       .select(...SECURE_USER_FIELDS).all();
   }
+
   @UseHook(TokenHook)
   @Get("/users/:id")
-  getOne(@Param("id") id: number) {
-    return User.select(...SECURE_USER_FIELDS).find(id);
+  async getOne(
+    @Param("id") id: string,
+  ) {
+    let qb: any = User.select(...SECURE_USER_FIELDS);
+    const user = isNaN(Number(id))
+      ? await qb.where("name", id).first()
+      : await qb.find(id);
+
+    return user;
   }
 
   @UseHook(TokenHook)
   @Delete("/users/:id")
   async delete(@Req() request: Request, @Param("id") id: number) {
     this.canManage(request.headers);
-    await User
-      .where("isMasterKey", false)
-      .deleteById(id);
 
     return {
+      ...await User
+        .where("master", false)
+        .deleteById(id),
       data: "deleted: " + id,
     };
   }
@@ -97,16 +96,26 @@ export class AuthController {
     }
     const token = User.generateJwt(user.id);
 
-    return { token: token, expiration: Number(JWT_TTL) };
+    return {
+      token: token,
+      expiration: new Date(JwtConfig.expirationTime).toString(),
+    };
   }
 
   @Get("/setup")
   async setup() {
-    if (!this.masterKey()) {
+    if (!(await this.masterKey())) {
       throw new ForbiddenError("Setup already done");
     }
 
     return true;
+  }
+
+  // Verify if master key object exist
+  protected async masterKey(): Promise<IUser> {
+    return await User.select("token")
+      .where("master", true)
+      .first();
   }
 
   protected async canManage(
@@ -115,7 +124,6 @@ export class AuthController {
   ) {
     const reqHeadersMasterKey = headers.get("master_key");
     let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
-
     if (
       !reqHeadersMasterKey && reqHeadersMasterKey !== masterKey.token &&
       (await bcrypt.compare(
@@ -123,16 +131,16 @@ export class AuthController {
         masterKey.token,
       ))
     ) {
-      throw new ForbiddenError();
+      throw new ForbiddenError("Can't manage users");
     }
   }
 
-  protected async createUser({ name, isMasterKey = false }: IUser) {
+  protected async createUser({ name, master = false }: IUser) {
     const userKeyToken = v4.generate();
     const user: IUser = {
       name: name,
       token: await User.hashToken(userKeyToken),
-      isMasterKey: isMasterKey,
+      master: master,
     };
 
     if (await User.where("name", name).first()) {

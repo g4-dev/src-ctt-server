@@ -1,6 +1,7 @@
 import "https://deno.land/x/dotenv/load.ts";
 
 export const {
+  APP_DEBUG,
   // App
   IP,
   PORT,
@@ -14,4 +15,6 @@ export const {
   // Api auth
   JWT_KEY,
   JWT_TTL,
+  // Cors
+  ORIGINS,
 } = Deno.env.toObject();

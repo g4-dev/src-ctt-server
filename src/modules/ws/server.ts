@@ -1,52 +1,24 @@
-import { serve } from "https://deno.land/std/http/server.ts";
 import {
   acceptWebSocket,
-  isWebSocketCloseEvent,
-  isWebSocketPingEvent,
-} from "https://deno.land/std/ws/mod.ts";
+  acceptable,
+} from "./deps.ts";
 
-/** websocket echo server */
-export const ws = async (port: number = 8082) => {
-  console.log(`websocket server is running on :${port}`);
-  for await (const req of serve(`:${port}`)) {
+/** websocket base server */
+export function ws(req: any): Promise<any> {
+  try {
+    if (!acceptable(req)) {
+      throw new Error("Non acceptable websocket");
+    }
+
     const { conn, r: bufReader, w: bufWriter, headers } = req;
 
-    try {
-      const sock = await acceptWebSocket({
-        conn,
-        bufReader,
-        bufWriter,
-        headers,
-      });
-
-      console.log("socket connected on : " + port);
-
-      try {
-        for await (const ev of sock) {
-          if (typeof ev === "string") {
-            // text message
-            console.log("ws:Text", ev);
-            await sock.send(ev);
-          } else if (isWebSocketPingEvent(ev)) {
-            const [, body] = ev;
-            // ping
-            console.log("ws:Ping", body);
-          } else if (isWebSocketCloseEvent(ev)) {
-            // close
-            const { code, reason } = ev;
-            console.log("ws:Close", code, reason);
-          }
-        }
-      } catch (err) {
-        console.error(`failed to receive frame: ${err}`);
-
-        if (!sock.isClosed) {
-          await sock.close(1000).catch(console.error);
-        }
-      }
-    } catch (err) {
-      console.error(`failed to accept websocket: ${err}`);
-      await req.respond({ status: 400 });
-    }
+    return acceptWebSocket({
+      conn,
+      bufReader,
+      bufWriter,
+      headers,
+    });
+  } catch (err) {
+    throw err;
   }
-};
+}

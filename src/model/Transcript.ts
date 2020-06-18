@@ -1,12 +1,13 @@
 import { Model, DataTypes, nanoid } from "../deps.ts";
 
+const STATUSES = ["done", "progress", "canceled"];
+
 export interface ITranscript {
-  name: string;
-  content: string;
+  uuid: string;
+  audio_file?: string;
+  text_file?: string;
   status: string;
 }
-
-const STATUSES = ["done", "progress", "canceled"];
 
 export class Transcript extends Model {
   static table = "transcript";
@@ -17,12 +18,16 @@ export class Transcript extends Model {
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    uuid: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    audio_file: {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    content: {
-      type: DataTypes.TEXT,
+    text_file: {
+      type: DataTypes.STRING,
       allowNull: true,
     },
     status: {
@@ -33,10 +38,10 @@ export class Transcript extends Model {
 
   static defaults = {
     id: nanoid(),
-    status: "done",
+    status: "progress",
   };
 
   static getStatus() {
-    return [];
+    return STATUSES;
   }
 }

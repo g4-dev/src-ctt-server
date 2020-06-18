@@ -1,5 +1,5 @@
 import { startServer, killServer } from "./test.utils.ts";
-import { assertEquals, delay } from "./deps.ts";
+import { assertEquals } from "./deps.ts";
 import { IP, PORT } from "../env.ts";
 import { IUser } from "../model/index.ts";
 import { soxa } from "./deps.ts";
@@ -14,9 +14,24 @@ soxa.defaults.validateStatus = function (status: number) {
 const testUser: IUser = {
   name: "test",
   token: "",
-  isMasterKey: false,
+  master: false,
 };
 let masterKeySave = "";
+
+// test({
+//   name: "[AUTH] Test protected route",
+//   async fn(): Promise<void> {
+//     await startServer("./app.ts");
+
+//     try {
+//       const home = await soxa.get("/");
+//       logger(home);
+//       assertEquals(home.status, 403);
+//     } finally {
+//       killServer();
+//     }
+//   },
+// });
 
 /**
  * Test cases
@@ -24,7 +39,9 @@ let masterKeySave = "";
 test({
   name: "[AUTH] Setup",
   async fn(): Promise<void> {
-    startServer();
+    await startServer();
+    // wait server start if deno load plugin
+    setTimeout(() => {}, 1000);
 
     try {
       // test auth protection
@@ -45,10 +62,11 @@ test({
       masterKeySave = masterKey.data.user.token;
 
       // login with master
-      const masterLogin = await soxa.post("/users/create?name=master", {
+      const masterLogin = await soxa.post("/login", {
         token: masterKeySave,
         name: "master",
       });
+      console.log(masterLogin);
       soxa.defaults.headers.common["Authorization"] = masterLogin.data.token;
       assertEquals(
         masterLogin.status,
@@ -73,9 +91,12 @@ test({
 test({
   name: "[AUTH] User CRULD",
   async fn(): Promise<void> {
-    startServer();
+    await startServer();
+    // wait server start if deno load plugin
+    setTimeout(() => {}, 1000);
+
     try {
-      const userCreate = await soxa.get(`/users/create?name=${testUser}`, {
+      const userCreate = await soxa.get(`/users/create?name=${testUser.name}`, {
         headers: { master_key: masterKeySave },
       });
       assertEquals(

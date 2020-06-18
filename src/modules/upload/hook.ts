@@ -29,10 +29,6 @@ const defaultUploadOptions: PayloadType = {
   useCurrentDir: true,
 };
 
-export class UploadContext<T> extends Context<T> {
-  uploadedFiles: any;
-}
-
 /**
  * Handle uploads
  * Use this middleware with CatchHook to catch upload errors
@@ -50,16 +46,20 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
         useCurrentDir,
       }: PayloadType = { ...defaultUploadOptions, ...payload };
 
+      console.log(path);
+
       ensureDirSync(join(Deno.cwd(), "temp_uploads"));
       if (
         parseInt(context.request.headers.get("content-length") as string) >
           maxSizeBytes
       ) {
-        throw new HttpError(
-          422,
-          `Maximum total upload size exceeded, size: ${
-            context.request.headers.get("content-length")
-          } bytes, maximum: ${maxSizeBytes} bytes. `,
+        reject(
+          new HttpError(
+            422,
+            `Maximum total upload size exceeded, size: ${
+              context.request.headers.get("content-length")
+            } bytes, maximum: ${maxSizeBytes} bytes. `,
+          ),
         );
       }
       const boundaryRegex = /^multipart\/form-data;\sboundary=(?<boundary>.*)$/;
@@ -99,8 +99,9 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
         }
         if (validations != "") {
           await form.removeAll();
-          throw new HttpError(422, validations);
+          reject(new HttpError(422, validations));
         }
+        console.log(entries);
         for (const item of entries) {
           let formField: any = item[0];
           let filesData: any = [].concat(item[1]);
@@ -139,6 +140,7 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
                 resData["uri"] = join(fullPath, fileData.filename);
               } else {
                 let tempFileName = resData.tempfile.split(SEP).pop();
+                console.log(tempFileName);
                 let pathTempFile = join(
                   Deno.cwd(),
                   "temp_uploads",
@@ -162,11 +164,14 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
             }
           }
         }
-        (context as UploadContext<unknown>).uploadedFiles = res;
+        console.log(res);
+        resolve((context as any).request.uploadedFiles = res);
       } else {
-        throw new HttpError(
-          422,
-          'Invalid upload data, request must contains a body with form "multipart/form-data", and inputs with type="file". ',
+        reject(
+          new HttpError(
+            422,
+            'Invalid upload data, request must contains a body with form "multipart/form-data", and inputs with type="file". ',
+          ),
         );
       }
     });

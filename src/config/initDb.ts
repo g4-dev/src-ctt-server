@@ -1,6 +1,7 @@
 import { Database } from "../deps.ts";
 import { Transcript, User } from "../model/index.ts";
 import {
+  APP_DEBUG,
   DB_HOST,
   DB_NAME,
   DB_PASSWORD,
@@ -10,7 +11,7 @@ import {
 } from "../env.ts";
 
 // Test db is a prefilled mysqlite raft
-export const dbMapping: any = {
+const dbMapping: any = {
   "mysql": {
     host: DB_HOST,
     username: DB_USER,
@@ -24,7 +25,7 @@ export const dbMapping: any = {
 };
 
 const db = new Database(
-  DB_TYPE || "mysql" as any,
+  { dialect: DB_TYPE || "mysql" as any, debug: APP_DEBUG === "true" },
   dbMapping[DB_TYPE || "mysql"],
 );
 

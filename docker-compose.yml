@@ -2,6 +2,7 @@ version: "3.3"
 
 services:
   deno:
+    restart: always
     image: "deno-docker:0.0.1"
     build: .
     ports:
