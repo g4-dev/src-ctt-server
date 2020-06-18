@@ -1,13 +1,12 @@
 version: "3.3"
 
 services:
-  deno:
+  ctt:
     restart: always
-    image: "deno-docker:0.0.1"
+    image: "deno-ctt:0.0.1"
     build: .
     ports:
       - "81:8081"
-      - "82:8082"
     networks:
       lcom:
           aliases:
@@ -21,6 +20,26 @@ services:
             - "traefik.backend.loadbalancer.sticky=false"
             - "traefik.protocol=http"
             - "traefik.weight=10"
+  ws:
+    restart: always
+    image: "deno-ws:0.0.1"
+    build: ./Dockerfile.ws
+    #dockerfile: Dockerfile.ws
+    networks:
+      lcom:
+          aliases:
+            - ctt-server.loicroux.com
+    ports:
+      - "82:8082"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=ctt_server"
+      - "traefik.frontend.rule=Host:ctt-server.loicroux.com"
+      - "traefik.port=80"
+      - "traefik.backend.loadbalancer.method=wrr"
+      - "traefik.backend.loadbalancer.sticky=false"
+      - "traefik.protocol=http"
+      - "traefik.weight=10"
 
 networks:
     lcom:

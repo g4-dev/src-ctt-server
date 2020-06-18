@@ -16,13 +16,14 @@ import { TokenHook, CatchHook } from "../../hooks/index.ts";
 import {
   UploadHook,
 } from "../../modules/upload/hook.ts";
-//import { ws } from "../../modules/ws/server.ts";
-//import { text } from "../../modules/ws/text.ts";
-//import { acceptWebSocket } from "../../modules/ws/deps.ts";
+import {
+  acceptWebSocket,
+} from "https://deno.land/std/ws/mod.ts";
+import { text } from "../../modules/ws/text.ts";
 
 const transcriptUploadOptions: any = {
-  path: "./uploads/audios",
-  extensions: ["wav"],
+  path: "./uploads",
+  extensions: ["wav", "txt"],
   saveFile: true,
   readFile: false,
   useCurrentDir: true,
@@ -65,6 +66,8 @@ export class TranscriptController {
 
   /**
    * Upload a single audio for a transcript providing id / uuid
+   * Upload associated text
+   * Update transcript instance
    * 
    * @param request {
    *    uploadedFiles : {
@@ -76,28 +79,20 @@ export class TranscriptController {
    *    }
    * }
    */
+
   @UseHook(UploadHook, transcriptUploadOptions)
-  @Post("/save-audio")
-  async saveAudio(
-    @Req() request: any,
-  ) {
-    console.log("upd", request.uploadedFiles);
+  @Post("/done")
+  async saveAudio(@Req() request: any) {
     if (!request.uploadedFiles) {
       throw new BadRequestError("No files provided");
     }
-    const transcriptId = Object.keys(request.uploadedFiles)[0];
+    const transcriptId =
+      request.uploadedFiles["text_file"].filename.split(".")[0];
 
     return await this.update(transcriptId, {
-      audio_file: request.uploadedFiles[transcriptId].url,
+      audio_file: request.uploadedFiles["audio_file"].url,
+      text_file: request.uploadedFiles["text_file"].url,
       status: "done",
     } as any);
   }
-
-  // @Get("/socket")
-  // async socket(context: any) {
-  //   // appel bdd
-  //   console.log(context);
-  //   // create websocket server
-  //   ws(context.request.serverRequest).then(text);
-  // }
 }

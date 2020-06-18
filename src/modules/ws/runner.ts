@@ -43,6 +43,7 @@ if (import.meta.main) {
   console.log(`websocket server is running on :${port}`);
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
+    console.log(req);
     acceptWebSocket({
       conn,
       bufReader,

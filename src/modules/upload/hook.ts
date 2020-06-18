@@ -29,6 +29,8 @@ const defaultUploadOptions: PayloadType = {
   useCurrentDir: true,
 };
 
+const COMPLEX_FILE_DIR = false;
+
 /**
  * Handle uploads
  * Use this middleware with CatchHook to catch upload errors
@@ -82,9 +84,7 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
           for (const val of values) {
             if (val.filename !== undefined) {
               if (extensions.length > 0) {
-                console.log(val.filename);
                 let ext = val.filename.split(".").pop();
-                console.log(ext);
                 if (!extensions.includes(ext)) {
                   validations +=
                     `The file extension is not allowed (${ext} in ${val.filename}), allowed extensions: ${extensions}. `;
@@ -101,7 +101,6 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
           await form.removeAll();
           reject(new HttpError(422, validations));
         }
-        console.log(entries);
         for (const item of entries) {
           let formField: any = item[0];
           let filesData: any = [].concat(item[1]);
@@ -113,15 +112,17 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
               }
               if (saveFile) {
                 const d = new Date();
-                const uuid = join(
-                  d.getFullYear().toString(),
-                  (d.getMonth() + 1).toString(),
-                  d.getDate().toString(),
-                  d.getHours().toString(),
-                  d.getMinutes().toString(),
-                  d.getSeconds().toString(),
-                  v4.generate(), //TODO improve to use of v5
-                );
+                const uuid = COMPLEX_FILE_DIR
+                  ? join(
+                    d.getFullYear().toString(),
+                    (d.getMonth() + 1).toString(),
+                    d.getDate().toString(),
+                    d.getHours().toString(),
+                    d.getMinutes().toString(),
+                    d.getSeconds().toString(),
+                    v4.generate(),
+                  )
+                  : d.toISOString().slice(0, 10).replace(/-/g, "_");
                 const uploadPath = join(path, uuid);
                 let fullPath = uploadPath;
                 if (useCurrentDir) {
@@ -140,7 +141,6 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
                 resData["uri"] = join(fullPath, fileData.filename);
               } else {
                 let tempFileName = resData.tempfile.split(SEP).pop();
-                console.log(tempFileName);
                 let pathTempFile = join(
                   Deno.cwd(),
                   "temp_uploads",
@@ -164,7 +164,6 @@ export class UploadHook implements HookTarget<unknown, PayloadType> {
             }
           }
         }
-        console.log(res);
         resolve((context as any).request.uploadedFiles = res);
       } else {
         reject(

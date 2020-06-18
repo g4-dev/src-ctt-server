@@ -16,4 +16,6 @@ COPY ./src .
 
 RUN deno run -A --unstable --config=tsconfig.json bin/schema.ts
 
+RUN deno run -A --config=tsconfig.app.json --unstable modules/ws/runner.ts
+
 CMD ["run", "-A", "--unstable", "--config=tsconfig.json", "app.ts"]
