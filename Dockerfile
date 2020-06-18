@@ -18,6 +18,4 @@ RUN ls -la
 
 RUN deno run -A --unstable --config=tsconfig.app.json ./bin/schema.ts
 
-RUN deno run -A --config=tsconfig.app.json --unstable ./modules/ws/runner.ts
-
 CMD ["run", "-A", "--unstable", "--config=tsconfig.app.json", "app.ts"]

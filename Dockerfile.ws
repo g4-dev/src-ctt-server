@@ -14,4 +14,4 @@ RUN chown -R deno:deno /app
 
 USER deno
 
-CMD ["run", "-A", "--unstable", "--config=tsconfig.app.json", "modules/ws/runner.ts"]
+CMD ["run", "-A", "--unstable", "--config=tsconfig.app.json", "modules/ws/runner.ts", ">/dev/null", "&"]

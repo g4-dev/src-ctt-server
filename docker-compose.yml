@@ -23,8 +23,9 @@ services:
   ws:
     restart: always
     image: "deno-ws:0.0.1"
-    build: ./Dockerfile.ws
-    #dockerfile: Dockerfile.ws
+    build: 
+      context: .
+      dockerfile: Dockerfile.ws
     networks:
       lcom:
           aliases:
