@@ -6,18 +6,28 @@ import {
   isWebSocketPingEvent,
   WebSocket,
 } from "https://deno.land/std/ws/mod.ts";
+import { v4 } from "https://deno.land/std/uuid/mod.ts";
 import { WS_PORT } from "../../env.ts";
 
-const transcripts = new Map<string, WebSocket>();
+// ws_uuid => ws
+const ws = new Map<string, WebSocket>();
 let currentUuid: any;
+let transcriptUuid: any;
 
 async function handleWs(sock: WebSocket) {
+  currentUuid = v4.generate();
   console.log(`${currentUuid} transcript...`);
-  transcripts.set(currentUuid, sock);
+  // transcript_uuid => ws_uuid
+  // ws_uuid => ws
+  ws.set(currentUuid, sock);
+
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {
         console.log("ws:txt", ev);
+        for (const w of ws.values()) {
+          await w.send(`[${transcriptUuid}] \n${ev}`);
+        }
         await sock.send(ev);
       } else if (ev instanceof Uint8Array) {
         // binary message
@@ -28,7 +38,7 @@ async function handleWs(sock: WebSocket) {
         console.log("ws:ping : ", body);
       } else if (isWebSocketCloseEvent(ev)) {
         // close
-        transcripts.delete(currentUuid);
+        ws.delete(currentUuid);
         const { code, reason } = ev;
         console.log("ws:close : ", code, reason);
       }
@@ -47,13 +57,8 @@ if (import.meta.main) {
   const port = WS_PORT || "8082";
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
-    currentUuid = headers.get("uuid") ||
+    transcriptUuid = headers.get("uuid") ||
       req.url.split("?uuid=").pop();
-    //!transcripts.get(currentUuid)
-    if (!currentUuid) {
-      await req.respond({ status: 204, body: "No corresponding UUID setted" });
-      continue;
-    }
 
     acceptWebSocket({
       conn,

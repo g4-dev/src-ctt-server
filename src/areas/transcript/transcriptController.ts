@@ -93,6 +93,7 @@ export class TranscriptController {
 
   @Post("/read-text")
   async readText(@Body() data: any) {
+    console.log(data);
     if (!data.path) {
       throw new NotFoundError();
     }
