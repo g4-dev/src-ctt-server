@@ -9,44 +9,35 @@ import {
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
 import { WS_PORT } from "../../env.ts";
 
-// ws_uuid => ws
+// ws_uuid | transcript uuid => ws
 const ws = new Map<string, WebSocket>();
-let currentUuid: any;
 let transcriptUuid: any;
 
 function broadcast(message: string): void {
+  console.info("sent : ", message);
+
   if (!message) return;
   for (const w of ws.values()) {
-    w.send(transcriptUuid ? `[${transcriptUuid}]:\n${message}` : message);
+    w.send(transcriptUuid ? `[${transcriptUuid}]\n${message}` : message);
   }
 }
 
 async function handleWs(sock: WebSocket) {
-  currentUuid = v4.generate();
-  console.log(`${currentUuid} transcript...`);
-  // transcript_uuid => ws_uuid
-  // ws_uuid => ws
-  ws.set(currentUuid, sock);
+  console.info(`${transcriptUuid} transcript...`);
+  ws.set(transcriptUuid, sock);
 
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {
-        console.log("ws:txt", ev);
         broadcast(ev);
-      } else if (ev instanceof Uint8Array) {
-        // binary message
-        console.log("ws:binary : ", ev);
       } else if (isWebSocketPingEvent(ev)) {
         const [, body] = ev;
-        // ping
         console.log("ws:ping : ", body);
-      } else if (isWebSocketCloseEvent(ev)) {
-        // close
-        //ws.delete(currentUuid);
+      } else if (!ev && isWebSocketCloseEvent(ev)) {
+        ws.delete(transcriptUuid);
         const { code, reason } = ev;
-        broadcast(`${currentUuid} closed`);
+        broadcast(`${transcriptUuid} closed`);
         console.log("ws:close : ", code, reason);
-        //continue;
         break;
       }
     }
@@ -65,7 +56,7 @@ if (import.meta.main) {
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
     transcriptUuid = headers.get("uuid") ||
-      req.url.split("?uuid=").pop();
+      req.url.split("?uuid=").pop() || v4.generate();
 
     acceptWebSocket({
       conn,
