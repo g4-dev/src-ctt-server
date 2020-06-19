@@ -9,26 +9,54 @@ import {
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
 import { WS_PORT } from "../../env.ts";
 
-// uuid => ws
-const ws = new Map<string, WebSocket>();
-let instanceUuid: any;
+type Ws = Map<string, WebSocket>;
+type Instance = Map<string, Ws>;
+/**
+ * Uniform Websockets connections
+ */
+const ws: Ws = new Map<string, WebSocket>();
+/**
+ * Instance associate websockets to a common id
+ */
+const instances: Instance = new Map<string, Map<string, WebSocket>>();
+// Keep in context ids
+let instanceUuid: string;
+let wsUuid: string;
+// Possible Origins
+let fromIa = false;
+let fromUi = false;
 
-function broadcast(message: string): void {
-  console.info("sent : ", message);
-
-  if (!message) return;
-  for (const w of ws.values()) {
-    w.send(instanceUuid ? `[${instanceUuid}]\n${message}` : message);
+/**
+ * Send message to all concerned websockets
+ * @param message
+ */
+function broadcast(message: string = "empty message"): void {
+  const websockets = instances.get(instanceUuid);
+  if (!websockets) return;
+  for (const websocket of websockets.values()) {
+    websocket.send(instanceUuid ? `[${instanceUuid}]\n${message}` : message);
   }
+  console.info("sent : ", message);
 }
 
 async function handleWs(sock: WebSocket) {
+  if (!instanceUuid) {
+    await sock.send(`wrong ${instanceUuid}`);
+    return true;
+  }
   console.info(`${instanceUuid} transcript...`);
-  ws.set(instanceUuid, sock);
+  if (fromUi) {
+    // associate ws with their maps
+    ws.set(wsUuid, sock);
+    instances.set(instanceUuid, ws);
+  }
 
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {
+        if (fromIa) {
+          sock.send(ev);
+        }
         broadcast(ev);
       } else if (isWebSocketPingEvent(ev)) {
         const [, body] = ev;
@@ -43,7 +71,6 @@ async function handleWs(sock: WebSocket) {
     }
   } catch (err) {
     console.error(`failed to receive frame: ${err}`);
-
     if (!sock.isClosed) {
       await sock.close(1000).catch(console.error);
     }
@@ -55,9 +82,17 @@ if (import.meta.main) {
   const port = WS_PORT || "8082";
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
-    instanceUuid = headers.get("uuid") ||
-      req.url.split("?uuid=").pop() || v4.generate();
+    // recognize origin
+    fromIa = headers.get("uuid") !== null;
+    fromUi = req.url.split("?uuid=").pop() !== null;
 
+    const payloadUuid = headers.get("uuid") ||
+      req.url.split("?uuid=").pop();
+    // Define identifier for current object
+    if (payloadUuid) {
+      instanceUuid = payloadUuid;
+      wsUuid = v4.generate();
+    }
     acceptWebSocket({
       conn,
       bufReader,
