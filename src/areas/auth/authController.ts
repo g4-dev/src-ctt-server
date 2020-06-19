@@ -123,9 +123,8 @@ export class AuthController {
     headers: Headers,
     masterKeyPayload: IUser | undefined = undefined,
   ) {
-    const reqHeadersMasterKey = headers.get("master_key") || null;
+    const reqHeadersMasterKey = headers.get("master_key");
     let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
-    console.log(masterKey);
     if (
       !reqHeadersMasterKey &&
       !(await bcrypt.compare(

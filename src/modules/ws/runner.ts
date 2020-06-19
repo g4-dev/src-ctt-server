@@ -9,22 +9,22 @@ import {
 import { v4 } from "https://deno.land/std/uuid/mod.ts";
 import { WS_PORT } from "../../env.ts";
 
-// ws_uuid | transcript uuid => ws
+// uuid => ws
 const ws = new Map<string, WebSocket>();
-let transcriptUuid: any;
+let instanceUuid: any;
 
 function broadcast(message: string): void {
   console.info("sent : ", message);
 
   if (!message) return;
   for (const w of ws.values()) {
-    w.send(transcriptUuid ? `[${transcriptUuid}]\n${message}` : message);
+    w.send(instanceUuid ? `[${instanceUuid}]\n${message}` : message);
   }
 }
 
 async function handleWs(sock: WebSocket) {
-  console.info(`${transcriptUuid} transcript...`);
-  ws.set(transcriptUuid, sock);
+  console.info(`${instanceUuid} transcript...`);
+  ws.set(instanceUuid, sock);
 
   try {
     for await (const ev of sock) {
@@ -34,9 +34,9 @@ async function handleWs(sock: WebSocket) {
         const [, body] = ev;
         console.log("ws:ping : ", body);
       } else if (!ev && isWebSocketCloseEvent(ev)) {
-        ws.delete(transcriptUuid);
+        ws.delete(instanceUuid);
         const { code, reason } = ev;
-        broadcast(`${transcriptUuid} closed`);
+        broadcast(`${instanceUuid} closed`);
         console.log("ws:close : ", code, reason);
         break;
       }
@@ -55,7 +55,7 @@ if (import.meta.main) {
   const port = WS_PORT || "8082";
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
-    transcriptUuid = headers.get("uuid") ||
+    instanceUuid = headers.get("uuid") ||
       req.url.split("?uuid=").pop() || v4.generate();
 
     acceptWebSocket({

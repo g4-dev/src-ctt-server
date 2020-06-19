@@ -70,7 +70,7 @@ export class TranscriptController {
    *      uuid {
    *        url: string
    *        uri: string,
-   *        mime: audio/wave
+   *        mime: audio/wave | text/plain
    *      }
    *    }
    * }
@@ -93,7 +93,6 @@ export class TranscriptController {
 
   @Post("/read-text")
   async readText(@Body() data: any) {
-    console.log(data);
     if (!data.path) {
       throw new NotFoundError();
     }
