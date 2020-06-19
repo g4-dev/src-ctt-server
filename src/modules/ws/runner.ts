@@ -9,27 +9,28 @@ import {
 import { WS_PORT } from "../../env.ts";
 
 const transcripts = new Map<string, WebSocket>();
-let currentUuid = "";
+let currentUuid: any;
 
 async function handleWs(sock: WebSocket) {
-  console.log(`${currentUuid} transcr`);
+  console.log(`${currentUuid} transcript...`);
+  transcripts.set(currentUuid, sock);
   try {
     for await (const ev of sock) {
       if (typeof ev === "string") {
-        // text message
-        console.log(ev);
+        console.log("ws:txt", ev);
         await sock.send(ev);
       } else if (ev instanceof Uint8Array) {
         // binary message
-        console.log("ws:Binary : ", ev);
+        console.log("ws:binary : ", ev);
       } else if (isWebSocketPingEvent(ev)) {
         const [, body] = ev;
         // ping
-        console.log("ws:Ping : ", body);
+        console.log("ws:ping : ", body);
       } else if (isWebSocketCloseEvent(ev)) {
         // close
+        transcripts.delete(currentUuid);
         const { code, reason } = ev;
-        console.log("ws:Close : ", code, reason);
+        console.log("ws:close : ", code, reason);
       }
     }
   } catch (err) {
@@ -46,11 +47,12 @@ if (import.meta.main) {
   const port = WS_PORT || "8082";
   for await (const req of serve(`:${port}`)) {
     const { conn, r: bufReader, w: bufWriter, headers } = req;
-
-    const currentUuid = headers.get("uuid");
+    currentUuid = headers.get("uuid") ||
+      req.url.split("?uuid=").pop();
+    //!transcripts.get(currentUuid)
     if (!currentUuid) {
-      console.error("No UUID set");
-      await req.respond({ status: 400 });
+      await req.respond({ status: 204, body: "No corresponding UUID setted" });
+      continue;
     }
 
     acceptWebSocket({

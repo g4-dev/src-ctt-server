@@ -5,12 +5,12 @@ import { Cors } from "./middlewares/index.ts";
 
 const app = new App(container);
 
-app.useCors(Cors);
-
 app.useStatic({
   root: `${Deno.cwd()}/uploads`,
   index: "public.html",
   baseRoute: "/uploads/",
 });
+
+app.useCors(Cors);
 
 app.listen(`${IP}:${PORT || 80}`);

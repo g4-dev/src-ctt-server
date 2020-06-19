@@ -64,14 +64,14 @@ export class TranscriptController {
    * Upload a single audio for a transcript providing id / uuid
    * Upload associated text
    * Update transcript instance
-   * 
+   *
    * @param request {
    *    uploadedFiles : {
    *      uuid {
    *        url: string
    *        uri: string,
    *        mime: audio/wave
-   *      } 
+   *      }
    *    }
    * }
    */
@@ -89,5 +89,16 @@ export class TranscriptController {
       text_file: request.uploadedFiles["text_file"].url,
       status: "done",
     } as any);
+  }
+
+  @Post("/read-text")
+  async readText(@Body() data: any) {
+    if (!data.path) {
+      throw new NotFoundError();
+    }
+    const decoder = new TextDecoder("utf-8");
+    return decoder.decode(
+      await Deno.readAll(await Deno.open(`./${data.path}`)),
+    );
   }
 }

@@ -18,7 +18,7 @@ import { ForbiddenError } from "../../deps.ts";
 import { v4 } from "../../deps.ts";
 import { JwtConfig } from "../../config/jwt.ts";
 
-const SECURE_USER_FIELDS = ["name", "created_at", "updated_at"];
+const SECURE_USER_FIELDS = ["id", "name", "created_at", "updated_at"];
 
 @UseHook(CatchHook)
 @Controller()
@@ -37,20 +37,20 @@ export class AuthController {
     @QueryParam("name") name: string,
   ) {
     const masterKey = await this.masterKey();
+    const token = request.headers.get("chosen_token") || "";
     if (!masterKey as boolean && name == "master") {
       return this.createUser({
         name: "master",
         master: true,
-        token: "",
+        token: token,
       });
     }
 
     this.canManage(request.headers, masterKey);
-    const token = request.headers.get("choosen_token") || "";
 
     return this.createUser({
       name: name,
-      token,
+      token: token,
       master: false,
     });
   }
@@ -125,6 +125,7 @@ export class AuthController {
   ) {
     const reqHeadersMasterKey = headers.get("master_key") || null;
     let masterKey: IUser = masterKeyPayload ?? await this.masterKey();
+    console.log(masterKey);
     if (
       !reqHeadersMasterKey &&
       !(await bcrypt.compare(
