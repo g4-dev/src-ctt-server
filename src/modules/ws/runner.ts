@@ -14,6 +14,13 @@ const ws = new Map<string, WebSocket>();
 let currentUuid: any;
 let transcriptUuid: any;
 
+function broadcast(message: string): void {
+  if (!message) return;
+  for (const w of ws.values()) {
+    w.send(transcriptUuid ? `[${transcriptUuid}]:\n${message}` : message);
+  }
+}
+
 async function handleWs(sock: WebSocket) {
   currentUuid = v4.generate();
   console.log(`${currentUuid} transcript...`);
@@ -25,10 +32,7 @@ async function handleWs(sock: WebSocket) {
     for await (const ev of sock) {
       if (typeof ev === "string") {
         console.log("ws:txt", ev);
-        for (const w of ws.values()) {
-          await w.send(`[${transcriptUuid}] \n${ev}`);
-        }
-        await sock.send(ev);
+        broadcast(ev);
       } else if (ev instanceof Uint8Array) {
         // binary message
         console.log("ws:binary : ", ev);
@@ -38,9 +42,12 @@ async function handleWs(sock: WebSocket) {
         console.log("ws:ping : ", body);
       } else if (isWebSocketCloseEvent(ev)) {
         // close
-        ws.delete(currentUuid);
+        //ws.delete(currentUuid);
         const { code, reason } = ev;
+        broadcast(`${currentUuid} closed`);
         console.log("ws:close : ", code, reason);
+        //continue;
+        break;
       }
     }
   } catch (err) {
