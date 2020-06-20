@@ -8,14 +8,12 @@ services:
     ports:
       - "81:8081"
     networks:
-      lcom:
-          aliases:
-            - ctt-server.loicroux.com
+      - lcom
     labels:
             - "traefik.enable=true"
             - "traefik.backend=ctt_server"
             - "traefik.frontend.rule=Host:ctt-server.loicroux.com"
-            - "traefik.port=80"
+            - "traefik.port=81"
             - "traefik.backend.loadbalancer.method=wrr"
             - "traefik.backend.loadbalancer.sticky=false"
             - "traefik.protocol=http"
@@ -27,16 +25,14 @@ services:
       context: .
       dockerfile: Dockerfile.ws
     networks:
-      lcom:
-          aliases:
-            - ws.ctt-server.loicroux.com
+      - lcom
     ports:
       - "82:8082"
     labels:
       - "traefik.enable=true"
       - "traefik.backend=ctt_server"
       - "traefik.frontend.rule=Host:ws.ctt-server.loicroux.com"
-      - "traefik.port=80"
+      - "traefik.port=82"
       - "traefik.backend.loadbalancer.method=wrr"
       - "traefik.backend.loadbalancer.sticky=false"
       - "traefik.protocol=http"
